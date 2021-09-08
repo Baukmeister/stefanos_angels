@@ -16,4 +16,4 @@ Have a look [here](https://docs.python-guide.org/dev/virtualenvs/) to learn more
 
 The datasets are already included in the repo.
 To run it just go to the project root and call
-`python main.py` 
+```python main.py``` 
