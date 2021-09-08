@@ -5,6 +5,7 @@ PROHI | A-Team
 ## Setup
 
 To ensure you have all required libraries installed either run
+
 ```pip3 install -r requirements.txt```
 
 Or manually install the libraries listed in the `requirements.txt` file.
