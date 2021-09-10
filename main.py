@@ -19,10 +19,10 @@ imputed_dataset = impute(selected_dataset, "median")
 normalized_dataset = normalize(imputed_dataset, "z", excluded_cols=["num"])
 
 # test/train split
-X_train, X_test, y_train, y_test  = custom_train_test_split(normalized_dataset, 'num')
+X_train, X_test, y_train, y_test = custom_train_test_split(normalized_dataset, 'num')
 
 # train a model
-model = train_knn(X_train, y_train)
+model = train_knn(X_train, y_train, n_neighbors=5)
 
 # evaluate the model
 eval_result = evaluate_model(model, X_test, y_test)
