@@ -2,8 +2,16 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
 
-def normalize(dataset: pd.DataFrame, method: str, excluded_cols: list = []):
-
+def normalize(dataset: pd.DataFrame, method: str, excluded_cols=None):
+    """
+    Normalizes certain columns of a given dataset
+    :param dataset: The pandas dataframe to be normalized
+    :param method: Method that should be used for normalization
+    :param excluded_cols: Column names that should not be included in the normalization process (e.g. target variable)
+    :return: The normalized dataset
+    """
+    if excluded_cols is None:
+        excluded_cols = []
     columns_to_scale = [col for col in dataset.columns if col not in excluded_cols]
     scaled_dataset = dataset
 

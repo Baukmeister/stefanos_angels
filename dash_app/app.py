@@ -1,12 +1,14 @@
 import dash
-from dash import dcc
-from dash import html
-from dash.dependencies import Input, Output
-
 from dash_app.html_elements import *
 
 
 def start_dash_server(df: pd.DataFrame, df_name: str, eval_results: dict):
+    """
+    Starts a dash server using pre-defined HTML elements
+    :param df: The dataframe used for training and evaluating the model
+    :param df_name: The name of the dataset
+    :param eval_results: A dict containing the basic evaluation metrics and the confusion matrix
+    """
     external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
     app = dash.Dash(__name__, external_stylesheets=external_stylesheets)

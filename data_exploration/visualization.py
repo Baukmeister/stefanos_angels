@@ -1,7 +1,9 @@
-import pandas as pd
-import matplotlib.pyplot as plt
 from pathlib import Path
+
+import matplotlib.pyplot as plt
+
 from data_exploration.data_loading import load_datasets
+
 
 def visualize_datasets(datasets_path: Path):
     cleveland, hungarian, switzerland, va = load_datasets(datasets_path)
