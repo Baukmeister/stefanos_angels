@@ -1,5 +1,5 @@
 import pandas as pd
-from pandas.core.frame import DataFrame
+
 
 def one_hot_encoding_function(dataset: pd.DataFrame, columns_to_encode=None):
     """
@@ -8,6 +8,6 @@ def one_hot_encoding_function(dataset: pd.DataFrame, columns_to_encode=None):
     :param columns_to_encode: columns in the dataset that will be replaced with encoding
     :return: dataset with encoded variables 
     """
-    encoded_dataset = pd.get_dummies(dataset, columns = columns_to_encode)
-    
+    encoded_dataset = pd.get_dummies(dataset, columns=columns_to_encode)
+
     return encoded_dataset
