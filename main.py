@@ -27,8 +27,8 @@ selected_dataset = datasets[0]
 
 # perform normalization and other pre-processing
 imputed_dataset = impute(selected_dataset, "median")
-encoded_dataset = one_hot_encoding_function(imputed_dataset, categorical_columns)
-normalized_dataset = normalize(encoded_dataset, "z", excluded_cols=non_normalization_colums + categorical_columns)
+normalized_dataset = normalize(imputed_dataset, "z", excluded_cols=non_normalization_colums + categorical_columns)
+encoded_dataset = one_hot_encoding_function(normalized_dataset, categorical_columns)
 
 # test/train split
 X_train, X_test, y_train, y_test = custom_train_test_split(normalized_dataset, 'num')
