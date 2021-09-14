@@ -1,5 +1,6 @@
 import dash
 from dash_app.html_elements import *
+from dash.dependencies import Input, Output, State
 
 
 def start_dash_server(df: pd.DataFrame, df_name: str, eval_results: dict):
@@ -21,8 +22,33 @@ def start_dash_server(df: pd.DataFrame, df_name: str, eval_results: dict):
             dcc.Tab(label='Model_Eval', children=[
                 get_model_viz_html(eval_results)
             ]),
-        ]),
-        html.Div(id='tabs-example-content')
+            dcc.Tab(label='New Input', children=
+            [html.Div([
+                html.Div(
+                          html.Div(
+                              id='input-fields',
+                              children=[
+                                           dcc.Input(
+                                               id="{}-input".format(col_name),
+                                               type="number",
+                                               placeholder=col_name
+                                           ) for col_name in df.columns
+                                       ] + [html.Button('Classify', id="classify-new-sample")],
+                              style={'width': '0.3vw'}
+                          )),
+                          html.Div(id="classification-output")
+                      ],
+                      )
+             ]),
+        ])
     ])
+
+    @app.callback(
+        Output("classification-output", "children"),
+        Input("classify-new-sample", "n_clicks"),
+        [State("{}-input".format(col_name), 'value', ) for col_name in df.columns]
+    )
+    def foo(*args):
+        return args[2]
 
     app.run_server(debug=True)
