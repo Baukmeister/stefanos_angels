@@ -1,4 +1,3 @@
-#X = pd.get_dummies(X, columns = ['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'ca', 'thal'])
 import pandas as pd
 from pandas.core.frame import DataFrame
 
