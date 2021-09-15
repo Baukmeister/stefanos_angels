@@ -1,7 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 
-
 def one_hot_encoding_function(dataset: pd.DataFrame, columns_to_encode=None, encoder: OneHotEncoder = None):
     """
     Method for encoding categorical variables in a dataset
@@ -23,4 +22,4 @@ def one_hot_encoding_function(dataset: pd.DataFrame, columns_to_encode=None, enc
         axis=1
     )
 
-    return encoded_dataset
+    return encoded_dataset, encoder

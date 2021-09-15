@@ -23,14 +23,18 @@ def normalize(dataset: pd.DataFrame, method: str, excluded_cols=None):
     scaled_dataset = numeric_dataset
 
     if method == "identity":
-        return scaled_dataset
+        return scaled_dataset, None
 
     if method == "min-max":
-        scaled_dataset[columns_to_scale] = pd.DataFrame(MinMaxScaler().fit_transform(numeric_dataset[columns_to_scale]))
+        Scaler = MinMaxScaler()
+        Scaler.fit(numeric_dataset[columns_to_scale])
+        scaled_dataset[columns_to_scale] = pd.DataFrame(Scaler.transform(numeric_dataset[columns_to_scale]))
         scaled_dataset.columns = numeric_dataset.columns
-        return scaled_dataset
+        return scaled_dataset, Scaler
 
     if method == "z":
-        scaled_dataset[columns_to_scale] = pd.DataFrame(StandardScaler().fit_transform(numeric_dataset[columns_to_scale]))
+        Scaler = StandardScaler()
+        Scaler.fit(numeric_dataset[columns_to_scale])
+        scaled_dataset[columns_to_scale] = pd.DataFrame(Scaler.transform(numeric_dataset[columns_to_scale]))
         scaled_dataset.columns = numeric_dataset.columns
-        return scaled_dataset
+        return scaled_dataset, Scaler
