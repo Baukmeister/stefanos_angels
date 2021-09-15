@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 
-def one_hot_encoding_function(dataset: pd.DataFrame, columns_to_encode=None, encoder: OneHotEncoder = None):
+def encode(dataset: pd.DataFrame, columns_to_encode=None, encoder: OneHotEncoder = None):
     """
     Method for encoding categorical variables in a dataset
     :param dataset: dataset with no encoding in it

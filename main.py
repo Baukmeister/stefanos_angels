@@ -27,11 +27,12 @@ selected_dataset = datasets[0]
 
 # perform normalization and other pre-processing
 imputed_dataset = impute(selected_dataset, "median")
-normalized_dataset, Normalizer = normalize(imputed_dataset, "z", excluded_cols=non_normalization_colums + categorical_columns)
-encoded_dataset, Encoder = one_hot_encoding_function(normalized_dataset, categorical_columns)
+normalized_dataset, Normalizer = normalize(imputed_dataset, "z",
+                                           excluded_cols=non_normalization_colums + categorical_columns)
+encoded_dataset, Encoder = encode(normalized_dataset, categorical_columns)
 
 # test/train split
-X_train, X_test, y_train, y_test = custom_train_test_split(normalized_dataset, 'num')
+X_train, X_test, y_train, y_test = custom_train_test_split(encoded_dataset, 'num')
 
 # train a model
 knn_model = train_knn(X_train, y_train, n_neighbors=5)
@@ -40,6 +41,15 @@ knn_model = train_knn(X_train, y_train, n_neighbors=5)
 knn_eval_result = evaluate_model(knn_model, X_test, y_test)
 
 # start the web app
-dash_server = DashServer(selected_dataset, "Cleveland", knn_eval_result, Normalizer, Encoder)
+dash_server = DashServer(
+    df=selected_dataset,
+    df_name="Cleveland",
+    target_col="num",
+    categorical_cols=categorical_columns,
+    eval_results=knn_eval_result,
+    normalizer=Normalizer,
+    encoder=Encoder,
+    encoding_func=encode,
+    model=knn_model
+)
 dash_server.start()
-
