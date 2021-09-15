@@ -1,7 +1,6 @@
 from sklearn.neighbors import KNeighborsClassifier
 import pandas as pd
 
-
 def train_knn(X_train: pd.DataFrame, y_train: pd.DataFrame, n_neighbors=10):
     """
     Method for training a KNN Classifier on the provided data
@@ -14,3 +13,4 @@ def train_knn(X_train: pd.DataFrame, y_train: pd.DataFrame, n_neighbors=10):
     neigh.fit(X_train, y_train)
 
     return neigh
+
