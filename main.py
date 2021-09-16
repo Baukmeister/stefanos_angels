@@ -54,4 +54,6 @@ dash_server = DashServer(
     model=knn_model
 )
 app = dash_server.start()
-app.run_server(debug=True)
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
