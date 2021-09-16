@@ -86,7 +86,8 @@ class DashServer:
                                              value=1,
                                              placeholder=col_name
                                          )]) for col_name in self.df.columns if col_name != self.target_col
-                                 ] + [
+                                 ] +
+                                 [
                                      html.H4("Result"), html.Button('Classify', id="classify-new-sample")
                                  ]
                         , className="input-field-container"),
