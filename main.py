@@ -27,25 +27,24 @@ datasets = load_datasets(Path("./datasets"))
 selected_dataset = datasets[0]
 
 # Turn the predicted categorical attribute into binary (1=Heart disease, 0=No heart disease)
-selected_dataset = binary_transformation(selected_dataset)
+binary_response_dataset = binary_transformation(selected_dataset)
 
 # perform normalization and other pre-processing
-imputed_dataset = impute(selected_dataset, "median")
+imputed_dataset = impute(binary_response_dataset, "median")
 normalized_dataset, Normalizer = normalize(imputed_dataset, "z",
                                            excluded_cols=non_normalization_colums + categorical_columns)
 encoded_dataset, Encoder = encode(normalized_dataset, categorical_columns)
 
 # test/train split
-X_train, X_test, y_train, y_test = custom_train_test_split(encoded_dataset, 'num')
+X_train, X_test, y_train, y_test = custom_train_test_split(encoded_dataset, 'num', random_state=10)
 
 # train a model
 knn_model = train_knn(X_train, y_train, n_neighbors=5)
-gbc_model = train_gbc(X_train, y_train)
+gbc_model = train_gbc(X_train, y_train, n_estimators=100, learning_rate=1.0, max_depth=2, random_state=0)
 
 # evaluate the model
 knn_eval_result = evaluate_model(knn_model, X_test, y_test)
-gbc_eval_result = evaluate_model(knn_model, X_test, y_test)
-
+gbc_eval_result = evaluate_model(gbc_model, X_test, y_test)
 
 # start the web app
 dash_server = DashServer(
@@ -53,10 +52,10 @@ dash_server = DashServer(
     df_name="Cleveland",
     target_col="num",
     categorical_cols=categorical_columns,
-    eval_results=rnd_eval_result,
+    eval_results=gbc_eval_result,
     normalizer=Normalizer,
     encoder=Encoder,
     encoding_func=encode,
-    model=rnd_model
+    model=gbc_model
 )
 dash_server.start()

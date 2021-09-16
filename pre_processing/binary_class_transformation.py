@@ -7,6 +7,6 @@ def binary_transformation(dataset: pd.DataFrame):
     :param dataset: Pandas dataset with categorical target attribute
     :return: dataframe with target attribute as binary
     """
-    dataset["num"].replace({2: 1, 3: 1, 4: 1}, inplace=True)
+    dataset["num"].replace(dataset['num'].values[dataset['num'] > 0], 1, inplace=True)
 
     return dataset
