@@ -26,7 +26,7 @@ datasets = load_datasets(Path("./datasets"))
 # chose the desired dataset
 selected_dataset = datasets[0]
 
-#Turn the predicted categorical attribute into binary (1=Heart disease, 0=No heart disease)
+# Turn the predicted categorical attribute into binary (1=Heart disease, 0=No heart disease)
 selected_dataset = binary_transformation(selected_dataset)
 
 # perform normalization and other pre-processing
