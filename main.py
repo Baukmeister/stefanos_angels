@@ -51,9 +51,11 @@ dash_server = DashServer(
     normalizer=Normalizer,
     encoder=Encoder,
     encoding_func=encode,
-    model=knn_model
+    model=knn_model,
+    module_name=__name__
 )
 app = dash_server.start()
+server = app.server
 
 if __name__ == '__main__':
     app.run_server(debug=True)
