@@ -77,6 +77,7 @@ class DashServer:
             ])
         ])
 
+
         @app.callback(
             Output("classification-output", "children"),
             Input("classify-new-sample", "n_clicks"),
@@ -89,17 +90,20 @@ class DashServer:
                 new_sample.columns = [col_name for col_name in df.columns]
 
                 # predict new sample
-                columns_to_scale = [col for col in df.columns if col not in categorical_cols + [target_col]]
-                normalized_sample = new_sample
-                normalized_sample[columns_to_scale] = normalizer.transform(new_sample[columns_to_scale])
-                encoded_sample, _ = encoding_func(normalized_sample, categorical_cols, encoder)
-                encoded_sample_no_target = encoded_sample.loc[:, encoded_sample.columns != target_col]
-
-                prediction = model.predict(encoded_sample_no_target)
+                prediction = _perform_classification_pipeline(new_sample)
 
                 return prediction
             except Exception as e:
                 print(e)
                 return str(e)
+
+        def _perform_classification_pipeline(new_sample: pd.DataFrame):
+            columns_to_scale = [col for col in df.columns if col not in categorical_cols + [target_col]]
+            normalized_sample = new_sample
+            normalized_sample[columns_to_scale] = normalizer.transform(new_sample[columns_to_scale])
+            encoded_sample, _ = encoding_func(normalized_sample, categorical_cols, encoder)
+            encoded_sample_no_target = encoded_sample.loc[:, encoded_sample.columns != target_col]
+            prediction = model.predict(encoded_sample_no_target)
+            return prediction
 
         app.run_server(debug=True)
