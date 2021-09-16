@@ -1,6 +1,8 @@
 import dash
 from dash_app.html_elements import *
 from dash.dependencies import Input, Output, State
+import os
+from pathlib import *
 
 
 class DashServer:
@@ -34,9 +36,8 @@ class DashServer:
         :param df_name: The name of the dataset
         :param eval_results: A dict containing the basic evaluation metrics and the confusion matrix
         """
-        external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
-        app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+        assets_path = Path(os.getcwd()) / "dash_app" / "assets"
+        app = dash.Dash(__name__, assets_folder=assets_path)
 
         # get required data onto server
         df = self.df
@@ -57,22 +58,20 @@ class DashServer:
                 ]),
                 dcc.Tab(label='New Input', children=
                 [html.Div([
-                    html.Div(
                         html.Div(
                             id='input-fields',
                             children=[
                                          dcc.Input(
                                              id="{}-input".format(col_name),
                                              type="number",
+                                             className="new-sample-input-field",
                                              value=1,
                                              placeholder=col_name
                                          ) for col_name in self.df.columns if col_name != self.target_col
-                                     ] + [html.Button('Classify', id="classify-new-sample")],
-                            style={'width': '0.3vw'}
-                        )),
-                    html.Div(id="classification-output")
-                ],
-                )
+                                     ] + [html.Button('Classify', id="classify-new-sample")]
+                        , className="input-field-container"),
+                    html.Div(id="classification-output", className="classification-output-container")
+                ],className="new-input-container")
                 ]),
             ])
         ])
