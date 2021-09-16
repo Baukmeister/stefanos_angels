@@ -130,4 +130,4 @@ class DashServer:
             prediction = model.predict(encoded_sample_no_target)
             return prediction
 
-        app.run_server(debug=True)
+        return app
