@@ -41,7 +41,7 @@ X_train, X_test, y_train, y_test = custom_train_test_split(encoded_dataset, 'num
 # train a model
 knn_model = train_knn(X_train, y_train, n_neighbors=5)
 gbc_model = train_gbc(X_train, y_train, n_estimators=100, learning_rate=1.0, max_depth=2, random_state=0)
-rnd_model = train_rnd(X_train, y_train)
+rnd_model = train_rnd(X_train, y_train, n_estimators=100, max_depth=10, criterion="entropy", random_state=0)
 
 # evaluate the model
 knn_eval_result = evaluate_model(knn_model, X_test, y_test)
