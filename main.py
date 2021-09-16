@@ -7,49 +7,54 @@ from pre_processing.impute import *
 from pre_processing.split_dataset import *
 from pre_processing.one_hot_encoding import *
 
-print("Hey there my angels!")
 
-"""
-CONFIG
-"""
-categorical_columns = ['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'ca', 'thal']
-non_normalization_colums = ['num']
+def run():
+    print("Hey there my angels!")
 
-"""
-RUNNING IT
-"""
+    """
+    CONFIG
+    """
+    categorical_columns = ['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'ca', 'thal']
+    non_normalization_colums = ['num']
 
-# get datasets
-datasets = load_datasets(Path("./datasets"))
+    """
+    RUNNING IT
+    """
 
-# chose the desired dataset
-selected_dataset = datasets[0]
+    # get datasets
+    datasets = load_datasets(Path("./datasets"))
 
-# perform normalization and other pre-processing
-imputed_dataset = impute(selected_dataset, "median")
-normalized_dataset, Normalizer = normalize(imputed_dataset, "z",
-                                           excluded_cols=non_normalization_colums + categorical_columns)
-encoded_dataset, Encoder = encode(normalized_dataset, categorical_columns)
+    # chose the desired dataset
+    selected_dataset = datasets[0]
 
-# test/train split
-X_train, X_test, y_train, y_test = custom_train_test_split(encoded_dataset, 'num')
+    # perform normalization and other pre-processing
+    imputed_dataset = impute(selected_dataset, "median")
+    normalized_dataset, Normalizer = normalize(imputed_dataset, "z",
+                                               excluded_cols=non_normalization_colums + categorical_columns)
+    encoded_dataset, Encoder = encode(normalized_dataset, categorical_columns)
 
-# train a model
-knn_model = train_knn(X_train, y_train, n_neighbors=5)
+    # test/train split
+    X_train, X_test, y_train, y_test = custom_train_test_split(encoded_dataset, 'num')
 
-# evaluate the model
-knn_eval_result = evaluate_model(knn_model, X_test, y_test)
+    # train a model
+    knn_model = train_knn(X_train, y_train, n_neighbors=5)
 
-# start the web app
-dash_server = DashServer(
-    df=selected_dataset,
-    df_name="Cleveland",
-    target_col="num",
-    categorical_cols=categorical_columns,
-    eval_results=knn_eval_result,
-    normalizer=Normalizer,
-    encoder=Encoder,
-    encoding_func=encode,
-    model=knn_model
-)
-dash_server.start()
+    # evaluate the model
+    knn_eval_result = evaluate_model(knn_model, X_test, y_test)
+
+    # start the web app
+    dash_server = DashServer(
+        df=selected_dataset,
+        df_name="Cleveland",
+        target_col="num",
+        categorical_cols=categorical_columns,
+        eval_results=knn_eval_result,
+        normalizer=Normalizer,
+        encoder=Encoder,
+        encoding_func=encode,
+        model=knn_model
+    )
+    dash_server.start()
+
+
+run()
