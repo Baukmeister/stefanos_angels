@@ -19,7 +19,7 @@ def encode(dataset: pd.DataFrame, columns_to_encode=None, encoder: OneHotEncoder
     columns_not_to_encode = [col for col in dataset.columns if col not in columns_to_encode]
 
     if encoder is None:
-        encoder = OneHotEncoder(sparse=False).fit(dataset[columns_to_encode])
+        encoder = OneHotEncoder(sparse=False, handle_unknown='ignore').fit(dataset[columns_to_encode])
 
     encoded_dataset = pd.concat(
         [
