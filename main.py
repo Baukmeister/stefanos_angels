@@ -7,9 +7,6 @@ from pre_processing.impute import *
 from pre_processing.split_dataset import *
 from pre_processing.one_hot_encoding import *
 
-#TODO: add docstrings to new additions
-#TODO: enhance HTML representation
-
 print("Hey there my angels!")
 
 """
