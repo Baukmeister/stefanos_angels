@@ -3,6 +3,7 @@ from dash_app.html_elements import *
 from dash.dependencies import Input, Output, State
 import os
 from pathlib import *
+import warnings
 
 
 class DashServer:
@@ -58,27 +59,35 @@ class DashServer:
                 ]),
                 dcc.Tab(label='New Input', children=
                 [html.Div([
-                        html.Div(
-                            id='input-fields',
-                            children=[
+                    html.Div(
+                        id='input-fields',
+                        children=[
+                                     html.Div(className="input-with-label-container", children=[
+                                         html.Label(col_name, className="input-label",
+                                                    htmlFor="{}-input".format(col_name)),
                                          dcc.Input(
                                              id="{}-input".format(col_name),
                                              type="number",
                                              className="new-sample-input-field",
                                              value=1,
                                              placeholder=col_name
-                                         ) for col_name in self.df.columns if col_name != self.target_col
-                                     ] + [html.Button('Classify', id="classify-new-sample")]
+                                         )]) for col_name in self.df.columns if col_name != self.target_col
+                                 ] + [
+                                     html.H4("Result"), html.Button('Classify', id="classify-new-sample")
+                                 ]
                         , className="input-field-container"),
-                    html.Div(id="classification-output", className="classification-output-container")
-                ],className="new-input-container")
+                    html.Div(className="result-container", children=[
+                        html.H2("Result:"),
+                        html.Div(id="classification-output", className="classification-output-container")
+                    ])
+                ], className="new-input-container")
                 ]),
             ])
         ])
 
-
         @app.callback(
             Output("classification-output", "children"),
+            Output("classification-output", "className"),
             Input("classify-new-sample", "n_clicks"),
             [State("{}-input".format(col_name), 'value', ) for col_name in self.df.columns if col_name != target_col],
             prevent_initial_call=True
@@ -91,10 +100,11 @@ class DashServer:
                 # predict new sample
                 prediction = _perform_classification_pipeline(new_sample)
 
-                return prediction
+                print("Classified sample as class {}".format(prediction))
+                return prediction, "classification-output-container green"
             except Exception as e:
-                print(e)
-                return str(e)
+                warnings.warn("Classification error: {}".format(str(e)))
+                return "Error \n (more info in console)", "classification-output-container red"
 
         def _perform_classification_pipeline(new_sample: pd.DataFrame):
             columns_to_scale = [col for col in df.columns if col not in categorical_cols + [target_col]]
