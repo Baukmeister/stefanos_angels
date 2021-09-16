@@ -1,4 +1,7 @@
+from typing import Callable
 import dash
+from sklearn.base import TransformerMixin, BaseEstimator
+
 from dash_app.html_elements import *
 from dash.dependencies import Input, Output, State
 import os
@@ -7,19 +10,32 @@ import warnings
 
 
 class DashServer:
+    """
+    Class for handling the setup and running of the Dash Server
+    
+    :param df: the dataset used for training the model
+    :param df_name: the name of the dataset (used for displaying on the website)
+    :param target_col: name of the target variable string
+    :param categorical_cols: the names of the columns that hold categorical variables
+    :param eval_results: a dictionary holding the evaluation results for the model
+    :param normalizer: the fitted normalizer used in data pre-processing 
+    :param encoder: the fitted encoder used in data pre-processing
+    :param encoding_func: a Callable that handled the encoding in data pre-processing
+    :param model: the trained model
+    """
 
     def __init__(
             self,
             df: pd.DataFrame,
             df_name: str,
             target_col: str,
-            categorical_cols,
+            categorical_cols: [],
             eval_results: dict,
-            normalizer,
-            encoder,
-            encoding_func,
-            model
-    ):
+            normalizer: TransformerMixin,
+            encoder: TransformerMixin,
+            encoding_func: Callable,
+            model: BaseEstimator
+    ) -> object:
         self.target_col = target_col
         self.categorical_cols = categorical_cols
         self.encoding_func = encoding_func
@@ -33,9 +49,6 @@ class DashServer:
     def start(self):
         """
         Starts a dash server using pre-defined HTML elements
-        :param df: The dataframe used for training and evaluating the model
-        :param df_name: The name of the dataset
-        :param eval_results: A dict containing the basic evaluation metrics and the confusion matrix
         """
         assets_path = Path(os.getcwd()) / "dash_app" / "assets"
         app = dash.Dash(__name__, assets_folder=assets_path)
@@ -69,6 +82,7 @@ class DashServer:
                                              id="{}-input".format(col_name),
                                              type="number",
                                              className="new-sample-input-field",
+                                             # remove this to get rid of the pre-filling of fields
                                              value=1,
                                              placeholder=col_name
                                          )]) for col_name in self.df.columns if col_name != self.target_col

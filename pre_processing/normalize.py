@@ -1,5 +1,7 @@
 import pandas as pd
+from sklearn.base import BaseEstimator
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from typing import Tuple
 
 
 def _cast_non_numeric_columns(dataset: pd.DataFrame):
@@ -7,13 +9,16 @@ def _cast_non_numeric_columns(dataset: pd.DataFrame):
     dataset[object_cols] = dataset[object_cols].apply(pd.to_numeric)
     return dataset
 
-def normalize(dataset: pd.DataFrame, method: str, excluded_cols=None):
+
+def normalize(dataset: pd.DataFrame, method: str, excluded_cols: [] = None) -> Tuple[pd.DataFrame, BaseEstimator]:
     """
     Normalizes certain columns of a given dataset
     :param dataset: The pandas dataframe to be normalized
     :param method: Method that should be used for normalization
     :param excluded_cols: Column names that should not be included in the normalization process (e.g. target variable)
-    :return: The normalized dataset
+    :return:
+        -The normalized dataset
+        -The trained scaler
     """
     numeric_dataset = _cast_non_numeric_columns(dataset)
 
