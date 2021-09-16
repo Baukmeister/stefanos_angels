@@ -6,6 +6,7 @@ from pre_processing.normalize import *
 from pre_processing.impute import *
 from pre_processing.split_dataset import *
 from pre_processing.one_hot_encoding import *
+from pre_processing.binary_class_transformation import *
 
 print("Hey there my angels!")
 
@@ -25,6 +26,9 @@ datasets = load_datasets(Path("./datasets"))
 # chose the desired dataset
 selected_dataset = datasets[0]
 
+#Turn the predicted categorical attribute into binary (1=Heart disease, 0=No heart disease)
+selected_dataset = binary_transformation(selected_dataset)
+
 # perform normalization and other pre-processing
 imputed_dataset = impute(selected_dataset, "median")
 normalized_dataset, Normalizer = normalize(imputed_dataset, "z",
@@ -36,9 +40,13 @@ X_train, X_test, y_train, y_test = custom_train_test_split(encoded_dataset, 'num
 
 # train a model
 knn_model = train_knn(X_train, y_train, n_neighbors=5)
+gbc_model = train_gbc(X_train, y_train)
+
+print(gbc_model.score(X_test, y_test))
 
 # evaluate the model
 knn_eval_result = evaluate_model(knn_model, X_test, y_test)
+gbc_eval_result = evaluate_model(knn_model, X_test, y_test)
 
 # start the web app
 dash_server = DashServer(

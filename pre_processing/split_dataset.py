@@ -12,4 +12,4 @@ def custom_train_test_split(dataset: pd.DataFrame, target_variable: str):
     X = dataset.drop(target_variable, axis=1)
     y = dataset[target_variable]
 
-    return train_test_split(X, y)
+    return train_test_split(X, y, random_state=10)
