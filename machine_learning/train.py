@@ -33,7 +33,7 @@ def train_gbc(X_train: pd.DataFrame, y_train: pd.DataFrame, n_estimators=100, le
 
     return gbc
 
-def train_rnd(X_train: pd.DataFrame, y_train: pd.DataFrame):
+def train_rnd(X_train: pd.DataFrame, y_train: pd.DataFrame, n_estimators=100, max_depth=10, criterion="entropy", random_state=0):
     """
     Method for training a Random Forest classifier on the provided data
     :param X_train: Input variables of the training set
@@ -44,7 +44,7 @@ def train_rnd(X_train: pd.DataFrame, y_train: pd.DataFrame):
     :param random_state: Controls the randomness of the samples using when building trees
     :return: The trained Random Forest Classifier Model
     """
-    rnd = RandomForestClassifier(n_estimators=100, max_depth=10, criterion="entropy", random_state=0)
+    rnd = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, criterion=criterion, random_state=random_state)
     rnd.fit(X_train, y_train)
 
     return rnd
