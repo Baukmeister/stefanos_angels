@@ -41,14 +41,11 @@ X_train, X_test, y_train, y_test = custom_train_test_split(encoded_dataset, 'num
 # train a model
 knn_model = train_knn(X_train, y_train, n_neighbors=5)
 gbc_model = train_gbc(X_train, y_train)
-rnd_model = train_rnd(X_train, y_train)
-
-print(gbc_model.score(X_test, y_test))
 
 # evaluate the model
 knn_eval_result = evaluate_model(knn_model, X_test, y_test)
 gbc_eval_result = evaluate_model(knn_model, X_test, y_test)
-rnd_eval_result = evaluate_model(rnd_model, X_test, y_test)
+
 
 # start the web app
 dash_server = DashServer(

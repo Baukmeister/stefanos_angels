@@ -29,20 +29,3 @@ def train_gbc(X_train: pd.DataFrame, y_train: pd.DataFrame):
     gbc.fit(X_train, y_train)
 
     return gbc
-
-
-def train_rnd(X_train: pd.DataFrame, y_train: pd.DataFrame):
-    """
-    Method for training a Random Forest classifier on the provided data
-    :param X_train: Input variables of the training set
-    :param y_train: Target variable of the training set
-    :param n_estimators: Number of estimators used in the Random Forest classifier
-    :param max_depth: The maximum depth of each tree in the forest
-    :param criterion: The function to measure the quality of a split. Using "entropy" for information gain
-    :param random_state: Controls the randomness of the samples using when building trees
-    :return: The trained Random Forest Classifier Model
-    """
-    rnd = RandomForestClassifier(n_estimators=100, max_depth=10, criterion="entropy", random_state=0)
-    rnd.fit(X_train, y_train)
-
-    return rnd
