@@ -2,7 +2,7 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 
 
-def custom_train_test_split(dataset: pd.DataFrame, target_variable: str):
+def custom_train_test_split(dataset: pd.DataFrame, target_variable: str, random_state=10):
     """
     Split a provided dataset into a test and train set
     :param dataset: The dataset to be split
@@ -12,4 +12,4 @@ def custom_train_test_split(dataset: pd.DataFrame, target_variable: str):
     X = dataset.drop(target_variable, axis=1)
     y = dataset[target_variable]
 
-    return train_test_split(X, y)
+    return train_test_split(X, y, random_state=random_state)
