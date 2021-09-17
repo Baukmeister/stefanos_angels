@@ -55,6 +55,11 @@ if model_type == 'dtr':
 if model_type == 'lgr':
     model = train_model(X_train, y_train, model_type)
 
+if model_type == 'svm':
+    model = train_model(X_train, y_train, model_type)
+
+
+
 
 # evaluate the model
 eval_result = evaluate_model(model, X_test, y_test)
