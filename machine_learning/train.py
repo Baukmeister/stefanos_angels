@@ -5,7 +5,20 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
 
 
-def train_knn(X_train: pd.DataFrame, y_train: pd.DataFrame, n_neighbors=10):
+def train_model(X_train: pd.DataFrame, y_train: pd.DataFrame, model: str, **kwargs):
+    if model == 'knn':
+        return _train_knn(X_train, y_train, **kwargs)
+    if model == 'gbc':
+        return _train_gbc(X_train, y_train, **kwargs)
+    if model == 'rnd':
+        return _train_rnd(X_train, y_train, **kwargs)
+    if model == 'dtr':
+        return _train_dtr(X_train, y_train, **kwargs)
+    if model == 'lgr':
+        return _train_lgr(X_train, y_train, **kwargs)
+
+
+def _train_knn(X_train: pd.DataFrame, y_train: pd.DataFrame, n_neighbors=10):
     """
     Method for training a KNN Classifier on the provided data
     :param X_train: Input variables of the training set
@@ -19,8 +32,8 @@ def train_knn(X_train: pd.DataFrame, y_train: pd.DataFrame, n_neighbors=10):
     return neigh
 
 
-def train_gbc(X_train: pd.DataFrame, y_train: pd.DataFrame, n_estimators=100, learning_rate=1.0, max_depth=2,
-              random_state=0):
+def _train_gbc(X_train: pd.DataFrame, y_train: pd.DataFrame, n_estimators=100, learning_rate=1.0, max_depth=2,
+               random_state=0):
     """
     Method for training a Gradient Boosting Classifier on the provided data
     :param X_train: Input variables of the training set
@@ -38,8 +51,8 @@ def train_gbc(X_train: pd.DataFrame, y_train: pd.DataFrame, n_estimators=100, le
     return gbc
 
 
-def train_rnd(X_train: pd.DataFrame, y_train: pd.DataFrame, n_estimators=100, max_depth=10, criterion="entropy",
-              random_state=0):
+def _train_rnd(X_train: pd.DataFrame, y_train: pd.DataFrame, n_estimators=100, max_depth=10, criterion="entropy",
+               random_state=0):
     """
     Method for training a Random Forest classifier on the provided data
     :param X_train: Input variables of the training set
@@ -57,8 +70,8 @@ def train_rnd(X_train: pd.DataFrame, y_train: pd.DataFrame, n_estimators=100, ma
     return rnd
 
 
-def train_dtr(X_train: pd.DataFrame, y_train: pd.DataFrame, splitter="best", max_depth=10, criterion="entropy",
-              random_state=0):
+def _train_dtr(X_train: pd.DataFrame, y_train: pd.DataFrame, splitter="best", max_depth=10, criterion="entropy",
+               random_state=0):
     """
     Method for training a Decision Tree classifier on the provided data
     :param X_train: Input variables of the training set
@@ -74,7 +87,8 @@ def train_dtr(X_train: pd.DataFrame, y_train: pd.DataFrame, splitter="best", max
 
     return dtr
 
-def train_logistic_regression(X_train: pd.DataFrame, y_train: pd.DataFrame, solver='liblinear'):
+
+def _train_lgr(X_train: pd.DataFrame, y_train: pd.DataFrame, solver='liblinear'):
     """
     Method for training a Logistic Regression Classifier on the provided data
     :param X_train: Input variables of the training set

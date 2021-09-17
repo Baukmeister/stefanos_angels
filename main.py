@@ -15,6 +15,7 @@ CONFIG
 """
 categorical_columns = ['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'ca', 'thal']
 non_normalization_colums = ['num']
+model = 'lgr'
 
 """
 RUNNING IT
@@ -39,16 +40,24 @@ encoded_dataset, Encoder = encode(normalized_dataset, categorical_columns)
 X_train, X_test, y_train, y_test = custom_train_test_split(encoded_dataset, 'num', random_state=10)
 
 # train a model
-knn_model = train_knn(X_train, y_train, n_neighbors=5)
-gbc_model = train_gbc(X_train, y_train, n_estimators=100, learning_rate=1.0, max_depth=2, random_state=0)
-rnd_model = train_rnd(X_train, y_train, n_estimators=100, max_depth=10, criterion="entropy", random_state=0)
-dtr_model = train_dtr(X_train, y_train, splitter="best", max_depth=10, criterion="entropy", random_state=0)
+if model == 'knn':
+    model = train_model(X_train, y_train, model, n_neighbors=5)
+
+if model == 'gbc':
+    model = train_model(X_train, y_train, model, n_estimators=100, learning_rate=1.0, max_depth=2, random_state=0)
+
+if model == 'rnd':
+    model = train_model(X_train, y_train, model, n_estimators=100, max_depth=10, criterion="entropy", random_state=0)
+
+if model == 'dtr':
+    model = train_model(X_train, y_train, model, splitter="best", max_depth=10, criterion="entropy", random_state=0)
+
+if model == 'lgr':
+    model = train_model(X_train, y_train, model)
+
 
 # evaluate the model
-knn_eval_result = evaluate_model(knn_model, X_test, y_test)
-gbc_eval_result = evaluate_model(gbc_model, X_test, y_test)
-rnd_eval_result = evaluate_model(rnd_model, X_test, y_test)
-dtr_eval_result = evaluate_model(dtr_model, X_test, y_test)
+eval_result = evaluate_model(model, X_test, y_test)
 
 # start the web app
 dash_server = DashServer(
@@ -56,11 +65,11 @@ dash_server = DashServer(
     df_name="Cleveland",
     target_col="num",
     categorical_cols=categorical_columns,
-    eval_results=rnd_eval_result,
+    eval_results=eval_result,
     normalizer=Normalizer,
     encoder=Encoder,
     encoding_func=encode,
-    model=rnd_model,
+    model=model,
     module_name=__name__
 )
 app = dash_server.start()
