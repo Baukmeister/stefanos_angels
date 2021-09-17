@@ -1,6 +1,7 @@
 from dash_app.app import *
 from data_exploration.visualization import *
 from machine_learning.eval import *
+from machine_learning.hyper import hyperTrain
 from machine_learning.train import *
 from pre_processing.normalize import *
 from pre_processing.impute import *
@@ -38,6 +39,9 @@ encoded_dataset, Encoder = encode(normalized_dataset, categorical_columns)
 
 # test/train split
 X_train, X_test, y_train, y_test = custom_train_test_split(encoded_dataset, 'num', random_state=10)
+
+#train hyperparameters
+#hyperTrain(X_train, y_train)
 
 # train a model
 if model_type == 'knn':

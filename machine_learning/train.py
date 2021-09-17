@@ -54,7 +54,7 @@ def _train_gbc(X_train: pd.DataFrame, y_train: pd.DataFrame, n_estimators=100, l
     return gbc
 
 
-def _train_rnd(X_train: pd.DataFrame, y_train: pd.DataFrame, n_estimators=100, max_depth=10, criterion="entropy",
+def _train_rnd(X_train: pd.DataFrame, y_train: pd.DataFrame, n_estimators=1218, max_depth=20, criterion="entropy",
                random_state=0):
     """
     Method for training a Random Forest classifier on the provided data
