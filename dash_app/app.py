@@ -132,12 +132,11 @@ class DashServer:
             [Input("{}-input".format(col_name), 'value', ) for col_name in self.df.columns if col_name != target_col],
         )
         def toggle_classify_button(*args):
-            none_elements = [elem for elem in args if elem == None]
+            none_elements = [elem for elem in args if elem is None]
             if len(none_elements) > 0:
                 return True
             else:
                 return False
-
 
         def _perform_classification_pipeline(new_sample: pd.DataFrame):
             columns_to_scale = [col for col in df.columns if col not in categorical_cols + [target_col]]
