@@ -15,7 +15,7 @@ CONFIG
 """
 categorical_columns = ['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'ca', 'thal']
 non_normalization_colums = ['num']
-model = 'lgr'
+model_type = 'lgr'
 
 """
 RUNNING IT
@@ -40,20 +40,20 @@ encoded_dataset, Encoder = encode(normalized_dataset, categorical_columns)
 X_train, X_test, y_train, y_test = custom_train_test_split(encoded_dataset, 'num', random_state=10)
 
 # train a model
-if model == 'knn':
-    model = train_model(X_train, y_train, model, n_neighbors=5)
+if model_type == 'knn':
+    model = train_model(X_train, y_train, model_type, n_neighbors=5)
 
-if model == 'gbc':
-    model = train_model(X_train, y_train, model, n_estimators=100, learning_rate=1.0, max_depth=2, random_state=0)
+if model_type == 'gbc':
+    model = train_model(X_train, y_train, model_type, n_estimators=100, learning_rate=1.0, max_depth=2, random_state=0)
 
-if model == 'rnd':
-    model = train_model(X_train, y_train, model, n_estimators=100, max_depth=10, criterion="entropy", random_state=0)
+if model_type == 'rnd':
+    model = train_model(X_train, y_train, model_type, n_estimators=100, max_depth=10, criterion="entropy", random_state=0)
 
-if model == 'dtr':
-    model = train_model(X_train, y_train, model, splitter="best", max_depth=10, criterion="entropy", random_state=0)
+if model_type == 'dtr':
+    model = train_model(X_train, y_train, model_type, splitter="best", max_depth=10, criterion="entropy", random_state=0)
 
-if model == 'lgr':
-    model = train_model(X_train, y_train, model)
+if model_type == 'lgr':
+    model = train_model(X_train, y_train, model_type)
 
 
 # evaluate the model
@@ -70,6 +70,7 @@ dash_server = DashServer(
     encoder=Encoder,
     encoding_func=encode,
     model=model,
+    model_type=model_type,
     module_name=__name__
 )
 app = dash_server.start()
