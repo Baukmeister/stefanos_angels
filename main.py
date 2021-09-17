@@ -36,10 +36,10 @@ encoded_dataset, Encoder = encode(normalized_dataset, categorical_columns)
 X_train, X_test, y_train, y_test = custom_train_test_split(encoded_dataset, 'num')
 
 # train a model
-knn_model = train_knn(X_train, y_train, n_neighbors=5)
+model = train_knn(X_train, y_train, n_neighbors=5)
 
 # evaluate the model
-knn_eval_result = evaluate_model(knn_model, X_test, y_test)
+eval_result = evaluate_model(model, X_test, y_test)
 
 # start the web app
 dash_server = DashServer(
@@ -47,11 +47,11 @@ dash_server = DashServer(
     df_name="Cleveland",
     target_col="num",
     categorical_cols=categorical_columns,
-    eval_results=knn_eval_result,
+    eval_results=eval_result,
     normalizer=Normalizer,
     encoder=Encoder,
     encoding_func=encode,
-    model=knn_model,
+    model=model,
     module_name=__name__
 )
 app = dash_server.start()
