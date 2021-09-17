@@ -15,7 +15,7 @@ CONFIG
 """
 categorical_columns = ['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'ca', 'thal']
 non_normalization_colums = ['num']
-model_type = 'lgr'
+model_type = 'dtr'
 
 """
 RUNNING IT
