@@ -34,7 +34,8 @@ class DashServer:
             normalizer: TransformerMixin,
             encoder: TransformerMixin,
             encoding_func: Callable,
-            model: BaseEstimator
+            model: BaseEstimator,
+            module_name,
     ) -> object:
         self.target_col = target_col
         self.categorical_cols = categorical_cols
@@ -45,13 +46,14 @@ class DashServer:
         self.df_name = df_name
         self.df = df
         self.eval_results = eval_results
+        self.module_name = module_name
 
     def start(self):
         """
         Starts a dash server using pre-defined HTML elements
         """
         assets_path = Path(os.getcwd()) / "dash_app" / "assets"
-        app = dash.Dash(__name__, assets_folder=assets_path)
+        app = dash.Dash(self.module_name, assets_folder=assets_path)
 
         # get required data onto server
         df = self.df
@@ -130,4 +132,4 @@ class DashServer:
             prediction = model.predict(encoded_sample_no_target)
             return prediction
 
-        app.run_server(debug=True)
+        return app
