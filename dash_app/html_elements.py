@@ -19,8 +19,8 @@ def get_data_viz_html(df: pd.DataFrame, df_name: str):
 
 
 def get_model_viz_html(eval_results: dict):
-    x = ["0", "1", "2", "3", "4"]
-    y = ["4", "3", "2", "1", "0"]
+    x = ["0", "1"]
+    y = ["1", "0"]
     confusion_matrix = eval_results['confusion_matrix'][::-1]
     z_text = [[str(y) for y in x] for x in confusion_matrix[::-1]]
 

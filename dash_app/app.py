@@ -22,6 +22,7 @@ class DashServer:
     :param encoder: the fitted encoder used in data pre-processing
     :param encoding_func: a Callable that handled the encoding in data pre-processing
     :param model: the trained model
+    :param model_type: the type of ML model used
     """
 
     def __init__(
@@ -35,12 +36,14 @@ class DashServer:
             encoder: TransformerMixin,
             encoding_func: Callable,
             model: BaseEstimator,
+            model_type: str,
             module_name,
     ) -> object:
         self.target_col = target_col
         self.categorical_cols = categorical_cols
         self.encoding_func = encoding_func
         self.model = model
+        self.model_type = model_type
         self.normalizer = normalizer
         self.encoder = encoder
         self.df_name = df_name
@@ -65,6 +68,7 @@ class DashServer:
         model = self.model
 
         app.layout = html.Div([
+            html.H1("🚀A-TEAM🚀 -- 👼👼👼🍝🧸👼👼👼 -- Model: {}".format(self.model_type)),
             dcc.Tabs(id='tabs-example', value='tab-2', children=[
                 dcc.Tab(label='Data', children=[
                     get_data_viz_html(self.df, self.df_name)
@@ -90,7 +94,7 @@ class DashServer:
                                          )]) for col_name in self.df.columns if col_name != self.target_col
                                  ] +
                                  [
-                                     html.H4("Result"), html.Button('Classify', id="classify-new-sample")
+                                     html.Button('Classify', id="classify-new-sample")
                                  ]
                         , className="input-field-container"),
                     html.Div(className="result-container", children=[
