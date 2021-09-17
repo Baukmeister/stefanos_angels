@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
 
@@ -16,6 +17,8 @@ def train_model(X_train: pd.DataFrame, y_train: pd.DataFrame, model: str, **kwar
         return _train_dtr(X_train, y_train, **kwargs)
     if model == 'lgr':
         return _train_lgr(X_train, y_train, **kwargs)
+    if model == 'svm':
+        return _train_svm(X_train, y_train, **kwargs)
 
 
 def _train_knn(X_train: pd.DataFrame, y_train: pd.DataFrame, n_neighbors=10):
@@ -101,3 +104,18 @@ def _train_lgr(X_train: pd.DataFrame, y_train: pd.DataFrame, solver='liblinear')
     logreg.fit(X_train, y_train)
 
     return logreg
+
+
+def _train_svm(X_train: pd.DataFrame, y_train: pd.DataFrame, kernel='linear'):
+    """
+    Method for training an SVM Classifier on the provided data
+    :param X_train: Input variables of the training set
+    :param y_train: Target variable of the training set
+    :param kernel: Specifies the kernel type to be used in the algorithm
+    :return: The trained SVM Classifier Model
+    """
+
+    svclassifier = SVC(kernel=kernel)
+    svclassifier.fit(X_train, y_train)
+
+    return svclassifier
