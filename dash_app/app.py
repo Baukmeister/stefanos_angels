@@ -94,7 +94,7 @@ class DashServer:
                                          )]) for col_name in self.df.columns if col_name != self.target_col
                                  ] +
                                  [
-                                     html.Button('Classify', id="classify-new-sample")
+                                     html.Button('Classify', id="classify-new-sample", disabled=True)
                                  ]
                         , className="input-field-container"),
                     html.Div(className="result-container", children=[
@@ -126,6 +126,17 @@ class DashServer:
             except Exception as e:
                 warnings.warn("Classification error: {}".format(str(e)))
                 return "Error \n (more info in console)", "classification-output-container red"
+
+        @app.callback(
+            Output("classify-new-sample", "disabled"),
+            [Input("{}-input".format(col_name), 'value', ) for col_name in self.df.columns if col_name != target_col],
+        )
+        def toggle_classify_button(*args):
+            none_elements = [elem for elem in args if elem is None]
+            if len(none_elements) > 0:
+                return True
+            else:
+                return False
 
         def _perform_classification_pipeline(new_sample: pd.DataFrame):
             columns_to_scale = [col for col in df.columns if col not in categorical_cols + [target_col]]
