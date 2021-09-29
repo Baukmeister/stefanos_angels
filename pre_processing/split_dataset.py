@@ -15,6 +15,6 @@ def custom_train_test_split(dataset: pd.DataFrame, target_variable: str, random_
     return train_test_split(X, y, random_state=random_state)
 
 
-def custom_hold_out_split(dataset: pd.DataFrame, eval_size = 0.3):
+def custom_hold_out_split(dataset: pd.DataFrame, eval_size=0.3):
     cv_train_data, cv_evaluate_data = train_test_split(dataset, test_size=eval_size)
     return cv_train_data, cv_evaluate_data

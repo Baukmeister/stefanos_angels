@@ -39,43 +39,48 @@ encoded_dataset, Encoder = encode(normalized_dataset, categorical_columns)
 
 # test/train split
 X_train, X_test, y_train, y_test = custom_train_test_split(encoded_dataset, 'num', random_state=10)
+entire_train_set = pd.concat([X_test, y_test], axis=1)
 
 # stratified hold out for cross validatoin and final evaluation
-cv_train_data, cv_evaluate_data = custom_hold_out_split(encoded_dataset, eval_size = 0.3)
+cv_train_data, cv_evaluate_data = custom_hold_out_split(encoded_dataset, eval_size=0.3)
 
-
-#train hyperparameters
-#hyperTrain(X_train, y_train)
+# train hyperparameters
+# hyperTrain(X_train, y_train)
 
 # train a model
 if model_type == 'knn':
-    model = train_model(X_train, y_train, model_type, n_neighbors=5)
+    model = create_model(X_train, y_train, model_type, n_neighbors=5)
 
 if model_type == 'gbc':
-    model = train_model(X_train, y_train, model_type, n_estimators=100, learning_rate=1.0, max_depth=2, random_state=0)
+    model = create_model(X_train, y_train, model_type, n_estimators=100, learning_rate=1.0, max_depth=2, random_state=0)
 
 if model_type == 'rnd':
-    model = train_model(X_train, y_train, model_type, n_estimators=100, max_depth=10, criterion="entropy", random_state=0)
+    model = create_model(X_train, y_train, model_type, n_estimators=100, max_depth=10, criterion="entropy",
+                         random_state=0)
 
 if model_type == 'dtr':
-    model = train_model(X_train, y_train, model_type, splitter="best", max_depth=10, criterion="entropy", random_state=0)
+    model = create_model(X_train, y_train, model_type, splitter="best", max_depth=10, criterion="entropy",
+                         random_state=0)
 
 if model_type == 'lgr':
-    model = train_model(X_train, y_train, model_type)
+    model = create_model(X_train, y_train, model_type)
 
 if model_type == 'svm':
-    model = train_model(X_train, y_train, model_type)
-
+    model = create_model(X_train, y_train, model_type)
 
 # cross validation
-cv_result = cross_validation_training(cv_train_data, scoring = ["accuracy", "recall", "precision", "f1"], cv=10)
-print(cv_result)
+cv_models = [
+    create_model(X_train, y_train, "knn", fit_model=False, n_neighbors=5),
+    create_model(X_train, y_train, "dtr", fit_model=False, splitter="best", max_depth=10, criterion="entropy",
+                 random_state=0),
+    create_model(X_train, y_train, "lgr", fit_model=False)
+]
 
+cv_result = cross_validation_training(cv_train_data, scoring=["accuracy", "recall", "precision", "f1"], models=cv_models, cv=10)
+print(cv_result)
 
 # evaluate the model
 eval_result = evaluate_model(model, X_test, y_test)
-cv_eval_result = cv_evaluate_model(model, cv_evaluate_data)
-print(cv_eval_result)
 
 # start the web app
 dash_server = DashServer(
