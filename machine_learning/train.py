@@ -119,24 +119,22 @@ def _train_svm(X_train: pd.DataFrame, y_train: pd.DataFrame, kernel='linear'):
     return svclassifier
 
 
-def cross_validation_training(dataset: pd.DataFrame, scoring=["accuracy", "recall", "precision", "f1"], models=None, cv=10):
-
-    if models is None:
-        models = []
+def cross_validation_training(dataset: pd.DataFrame, models: dict, scoring=["accuracy", "recall", "precision", "f1"], cv=10):
 
     X = dataset.drop("num", axis=1)
     y = dataset['num']
-    cv_results = pd.DataFrame(columns=['mean accuracy', 'mean f1', 'mean recall', 'mean precision'], index=models)
-    for model in models:
+    cv_results = pd.DataFrame(columns=['mean accuracy', 'mean f1', 'mean recall', 'mean precision'], index=models.keys())
+    for model_name, model in models.items():
         scores = cross_validate(model, X, y, cv=cv, scoring=scoring)
         scores = pd.DataFrame.from_dict(scores)
         scores = scores.transpose()
         scores['mean'] = scores.mean(axis=1)
 
         # append mean measures from the cross validation performed on each model to the cv_result dataframe 
-        cv_results['mean accuracy'][model] = scores.at['test_accuracy', 'mean']
-        cv_results['mean f1'][model] = scores.at['test_f1', 'mean']
-        cv_results['mean recall'][model] = scores.at['test_recall', 'mean']
-        cv_results['mean precision'][model] = scores.at['test_precision', 'mean']
+        cv_results['mean accuracy'][model_name] = scores.at['test_accuracy', 'mean']
+        cv_results['mean f1'][model_name] = scores.at['test_f1', 'mean']
+        cv_results['mean recall'][model_name] = scores.at['test_recall', 'mean']
+        cv_results['mean precision'][model_name] = scores.at['test_precision', 'mean']
 
     return cv_results
+

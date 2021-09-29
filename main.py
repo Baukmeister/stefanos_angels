@@ -69,14 +69,15 @@ if model_type == 'svm':
     model = create_model(X_train, y_train, model_type)
 
 # cross validation
-cv_models = [
-    create_model(X_train, y_train, "knn", fit_model=False, n_neighbors=5),
-    create_model(X_train, y_train, "dtr", fit_model=False, splitter="best", max_depth=10, criterion="entropy",
-                 random_state=0),
-    create_model(X_train, y_train, "lgr", fit_model=False)
-]
+cv_models = {
+    "KNN": create_model(X_train, y_train, "knn", fit_model=False, n_neighbors=5),
+    "Decision_Tree": create_model(X_train, y_train, "dtr", fit_model=False, splitter="best", max_depth=10,
+                                  criterion="entropy", random_state=0),
+    "Linear_Regression": create_model(X_train, y_train, "lgr", fit_model=False)
+}
 
-cv_result = cross_validation_training(cv_train_data, scoring=["accuracy", "recall", "precision", "f1"], models=cv_models, cv=10)
+cv_result = cross_validation_training(cv_train_data, scoring=["accuracy", "recall", "precision", "f1"],
+                                      models=cv_models, cv=10)
 print(cv_result)
 
 # evaluate the model
@@ -88,6 +89,7 @@ dash_server = DashServer(
     df_name="Cleveland",
     target_col="num",
     categorical_cols=categorical_columns,
+    cv_result=cv_result,
     eval_results=eval_result,
     normalizer=Normalizer,
     encoder=Encoder,
