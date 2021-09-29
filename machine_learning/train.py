@@ -4,6 +4,10 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import cross_validate
+
+# Declaring a list with initilzed models we use
+models = []
 
 
 def train_model(X_train: pd.DataFrame, y_train: pd.DataFrame, model: str, **kwargs):
@@ -30,6 +34,7 @@ def _train_knn(X_train: pd.DataFrame, y_train: pd.DataFrame, n_neighbors=10):
     :return: The trained KNN Classifier Model
     """
     neigh = KNeighborsClassifier(n_neighbors=n_neighbors)
+    models.append(neigh)
     neigh.fit(X_train, y_train)
 
     return neigh
@@ -49,6 +54,7 @@ def _train_gbc(X_train: pd.DataFrame, y_train: pd.DataFrame, n_estimators=100, l
     """
     gbc = GradientBoostingClassifier(n_estimators=n_estimators, learning_rate=learning_rate, max_depth=max_depth,
                                      random_state=random_state)
+    models.append(gbc)
     gbc.fit(X_train, y_train)
 
     return gbc
@@ -68,6 +74,7 @@ def _train_rnd(X_train: pd.DataFrame, y_train: pd.DataFrame, n_estimators=1218, 
     """
     rnd = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, criterion=criterion,
                                  random_state=random_state)
+    models.append(rnd)
     rnd.fit(X_train, y_train)
 
     return rnd
@@ -86,6 +93,7 @@ def _train_dtr(X_train: pd.DataFrame, y_train: pd.DataFrame, splitter="best", ma
     :return: The trained Decision Tree Classifier Model
     """
     dtr = DecisionTreeClassifier(splitter=splitter, max_depth=max_depth, criterion=criterion, random_state=random_state)
+    models.append(dtr)
     dtr.fit(X_train, y_train)
 
     return dtr
@@ -101,6 +109,7 @@ def _train_lgr(X_train: pd.DataFrame, y_train: pd.DataFrame, solver='liblinear')
     """
 
     logreg = LogisticRegression(solver=solver)
+    models.append(logreg)
     logreg.fit(X_train, y_train)
 
     return logreg
@@ -116,6 +125,27 @@ def _train_svm(X_train: pd.DataFrame, y_train: pd.DataFrame, kernel='linear'):
     """
 
     svclassifier = SVC(kernel=kernel)
+    models.append(svclassifier)
     svclassifier.fit(X_train, y_train)
 
     return svclassifier
+
+
+def cross_validation_training(dataset: pd.DataFrame, scoring = ["accuracy", "recall", "precision", "f1"], cv=10):
+
+    X = dataset.drop("num", axis=1)
+    y = dataset['num']
+    cv_results = pd.DataFrame(columns=['mean accuracy', 'mean f1', 'mean recall', 'mean precision'], index=models)
+    for model in models:
+        scores = cross_validate(model, X, y, cv=cv, scoring=scoring)
+        scores = pd.DataFrame.from_dict(scores)
+        scores = scores.transpose()
+        scores['mean'] = scores.mean(axis=1)
+
+        # append mean measures from the cross validation performed on each model to the cv_result dataframe 
+        cv_results['mean accuracy'] = scores.at['test_accuracy', 'mean']
+        cv_results['mean f1'] = scores.at['test_f1', 'mean']
+        cv_results['mean recall'] = scores.at['test_recall', 'mean']
+        cv_results['mean precision'] = scores.at['test_precision', 'mean']
+    
+    return cv_results

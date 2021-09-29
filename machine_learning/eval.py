@@ -1,3 +1,5 @@
+from os import X_OK
+import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
 from sklearn.metrics import recall_score
@@ -18,4 +20,16 @@ def evaluate_model(model, X_test, y_test):
                "f1": f1_score(y_test, preds, average="macro"),
                "confusion_matrix": confusion_matrix(y_test, preds,)}
 
+    return results
+
+def cv_evaluate_model(model, dataset: pd.DataFrame):
+    X = dataset.drop("num", axis=1)
+    y = dataset['num']
+
+    preds = model.predict(X)
+    results = {"accuracy": accuracy_score(y, preds),
+               "recall": recall_score(y, preds, average="macro"),
+               "f1": f1_score(y, preds, average="macro"),
+               "confusion_matrix": confusion_matrix(y, preds,)}
+    
     return results

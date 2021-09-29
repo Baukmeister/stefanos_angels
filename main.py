@@ -16,7 +16,7 @@ CONFIG
 """
 categorical_columns = ['sex', 'cp', 'fbs', 'restecg', 'exang', 'slope', 'ca', 'thal']
 non_normalization_colums = ['num']
-model_type = 'dtr'
+model_type = 'lgr'
 
 """
 RUNNING IT
@@ -39,6 +39,10 @@ encoded_dataset, Encoder = encode(normalized_dataset, categorical_columns)
 
 # test/train split
 X_train, X_test, y_train, y_test = custom_train_test_split(encoded_dataset, 'num', random_state=10)
+
+# stratified hold out for cross validatoin and final evaluation
+cv_train_data, cv_evaluate_data = custom_hold_out_split(encoded_dataset, eval_size = 0.3)
+
 
 #train hyperparameters
 #hyperTrain(X_train, y_train)
@@ -63,10 +67,15 @@ if model_type == 'svm':
     model = train_model(X_train, y_train, model_type)
 
 
+# cross validation
+cv_result = cross_validation_training(cv_train_data, scoring = ["accuracy", "recall", "precision", "f1"], cv=10)
+print(cv_result)
 
 
 # evaluate the model
 eval_result = evaluate_model(model, X_test, y_test)
+cv_eval_result = cv_evaluate_model(model, cv_evaluate_data)
+print(cv_eval_result)
 
 # start the web app
 dash_server = DashServer(
