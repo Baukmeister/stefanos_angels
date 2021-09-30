@@ -119,11 +119,23 @@ def _train_svm(X_train: pd.DataFrame, y_train: pd.DataFrame, kernel='linear'):
     return svclassifier
 
 
-def cross_validation_training(dataset: pd.DataFrame, models: dict, scoring=["accuracy", "recall", "precision", "f1"], cv=10):
-
+def cross_validation_training(dataset: pd.DataFrame, models: dict, scoring=["accuracy", "recall", "precision", "f1"], cv=5):
+    """
+    Method for training and performing cross validation on a group of models
+    :param dataset: the dataset that should be split into features and labels and then used for cross validation and training for each model
+    :param models: a dictionary that holds the unfitted models that cross validation should be perfomed on. Keys are model name and values are the unfitted models
+    :param scoring: a list or single value of what scoring measures that should be calculated
+    :param cv: the number of folds in the cross validation
+    :return: a dataframe that holds each models mean accuracy, recall, precision and f1
+    """
+    # split the dataset into features and labels
     X = dataset.drop("num", axis=1)
     y = dataset['num']
+
+    # instantiate a dataframe that will hold the mean measures for each model
     cv_results = pd.DataFrame(columns=['mean accuracy', 'mean f1', 'mean recall', 'mean precision'], index=models.keys())
+
+    # iterating over the unfitted dictionary of models performing cross validation
     for model_name, model in models.items():
         scores = cross_validate(model, X, y, cv=cv, scoring=scoring)
         scores = pd.DataFrame.from_dict(scores)
@@ -135,6 +147,7 @@ def cross_validation_training(dataset: pd.DataFrame, models: dict, scoring=["acc
         cv_results['mean f1'][model_name] = scores.at['test_f1', 'mean']
         cv_results['mean recall'][model_name] = scores.at['test_recall', 'mean']
         cv_results['mean precision'][model_name] = scores.at['test_precision', 'mean']
-
-    return cv_results
+    
+    # return a sorted cv_result by mean accuracy and mean f1
+    return cv_results.sort_values(by=['mean accuracy', 'mean f1'], ascending=False)
 
