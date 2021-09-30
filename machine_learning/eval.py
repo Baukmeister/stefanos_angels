@@ -1,5 +1,3 @@
-from os import X_OK
-import pandas as pd
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
 from sklearn.metrics import recall_score
