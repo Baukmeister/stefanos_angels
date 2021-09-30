@@ -18,7 +18,7 @@ def get_data_viz_html(df: pd.DataFrame, df_name: str):
     return data_viz_html
 
 
-def get_model_viz_html(eval_results: dict):
+def get_model_viz_html(eval_results: dict, cv_result: pd.DataFrame):
     x = ["0", "1"]
     y = ["1", "0"]
     confusion_matrix = eval_results['confusion_matrix'][::-1]
@@ -33,6 +33,10 @@ def get_model_viz_html(eval_results: dict):
         annotation_text=z_text
     )
 
+    # create a new column in the dataframe that contains the model name (index)
+    cv_result = cv_result.reset_index()
+    cv_result = cv_result.rename(columns={"index": "Model Name"})
+
     model_viz_html = html.Div([
         html.Div([
             html.H4("Stats"),
@@ -46,7 +50,13 @@ def get_model_viz_html(eval_results: dict):
         html.Div([
             html.H4("Confusion Matrix"),
             dcc.Graph(figure=fig),
-        ])
+        ]),
+        html.H3("MODEL COMPRISONS"),
+        dash_table.DataTable(
+            id='cv-table',
+            columns=[{"name": i, "id": i} for i in cv_result.columns],
+            data=cv_result.to_dict('records')
+        )
 
     ])
 

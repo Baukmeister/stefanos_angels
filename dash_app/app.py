@@ -17,6 +17,7 @@ class DashServer:
     :param df_name: the name of the dataset (used for displaying on the website)
     :param target_col: name of the target variable string
     :param categorical_cols: the names of the columns that hold categorical variables
+    :param cv_result: a dataframe containing metrics for the cross validation evaluation of different models
     :param eval_results: a dictionary holding the evaluation results for the model
     :param normalizer: the fitted normalizer used in data pre-processing 
     :param encoder: the fitted encoder used in data pre-processing
@@ -31,6 +32,7 @@ class DashServer:
             df_name: str,
             target_col: str,
             categorical_cols: [],
+            cv_result: pd.DataFrame,
             eval_results: dict,
             normalizer: TransformerMixin,
             encoder: TransformerMixin,
@@ -45,6 +47,7 @@ class DashServer:
         self.model = model
         self.model_type = model_type
         self.normalizer = normalizer
+        self.cv_result = cv_result
         self.encoder = encoder
         self.df_name = df_name
         self.df = df
@@ -74,7 +77,7 @@ class DashServer:
                     get_data_viz_html(self.df, self.df_name)
                 ]),
                 dcc.Tab(label='Model_Eval', children=[
-                    get_model_viz_html(self.eval_results)
+                    get_model_viz_html(self.eval_results, self.cv_result)
                 ]),
                 dcc.Tab(label='New Input', children=
                 [html.Div([
