@@ -85,7 +85,7 @@ class DashServer:
                         id='input-fields',
                         children=[
                                      html.Div(className="input-with-label-container", children=[
-                                         html.Label(col_name+":", className="input-label",
+                                         html.Label(col_name + ":", className="input-label",
                                                     htmlFor="{}-input".format(col_name)),
                                          dcc.Input(
                                              id="{}-input".format(col_name),
@@ -93,11 +93,12 @@ class DashServer:
                                              className="new-sample-input-field",
                                              # remove this to get rid of the pre-filling of fields
                                              value=1,
-                                             placeholder=col_name
+                                             placeholder="enter value"
                                          )]) for col_name in self.df.columns if col_name != self.target_col
                                  ] +
                                  [
-                                     html.Button('Classify', id="classify-new-sample", disabled=True)
+                                     html.Button('Classify', id="classify-new-sample", disabled=True),
+                                     html.Button('Clear Values', id="clear-inputs")
                                  ]
                         , className="input-field-container"),
                     html.Div(className="result-container", children=[
@@ -140,6 +141,16 @@ class DashServer:
                 return True
             else:
                 return False
+
+        @app.callback(
+            [Output("{}-input".format(col_name), 'value', ) for col_name in self.df.columns if col_name != target_col],
+            Input("clear-inputs", "n_clicks"),
+            [State("{}-input".format(col_name), 'value', ) for col_name in self.df.columns if col_name != target_col],
+            prevent_initial_call=True
+        )
+        def _clear_values(*args):
+            output = [None] * (len(args)-1)
+            return output
 
         def _perform_classification_pipeline(new_sample: pd.DataFrame):
             columns_to_scale = [col for col in df.columns if col not in categorical_cols + [target_col]]
