@@ -85,7 +85,7 @@ class DashServer:
                         id='input-fields',
                         children=[
                                      html.Div(className="input-with-label-container", children=[
-                                         html.Label(col_name, className="input-label",
+                                         html.Label(col_name+":", className="input-label",
                                                     htmlFor="{}-input".format(col_name)),
                                          dcc.Input(
                                              id="{}-input".format(col_name),

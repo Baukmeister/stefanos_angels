@@ -10,7 +10,7 @@ def get_data_viz_html(df: pd.DataFrame, df_name: str):
         html.H2(df_name),
         dash_table.DataTable(
             id='table',
-            columns=[{"name": i, "id": i} for i in df.columns],
+            columns=[{"name": i.split("(")[0], "id": i} for i in df.columns],
             data=df.to_dict('records'),
         )
     ])
