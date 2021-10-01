@@ -71,7 +71,7 @@ class DashServer:
         model = self.model
 
         app.layout = html.Div([
-            html.H1("🚀A-TEAM🚀 -- 👼👼👼🍝🧸👼👼👼 -- Model: {}".format(self.model_type)),
+            html.H1("🚀A-TEAM🚀 -- Model: {}".format(self.model_type)),
             dcc.Tabs(id='tabs-example', value='tab-2', children=[
                 dcc.Tab(label='Data', children=[
                     get_data_viz_html(self.df, self.df_name)
@@ -97,8 +97,11 @@ class DashServer:
                                          )]) for col_name in self.df.columns if col_name != self.target_col
                                  ] +
                                  [
-                                     html.Button('Classify', id="classify-new-sample", disabled=True),
-                                     html.Button('Clear Values', id="clear-inputs")
+                                     html.Div(children=[
+                                         html.Button('Classify', id="classify-new-sample", disabled=True),
+                                         html.Button('Clear Values', id="clear-inputs")
+                                     ],
+                                     className="input-buttons-container")
                                  ]
                         , className="input-field-container"),
                     html.Div(className="result-container", children=[
@@ -149,7 +152,7 @@ class DashServer:
             prevent_initial_call=True
         )
         def _clear_values(*args):
-            output = [None] * (len(args)-1)
+            output = [None] * (len(args) - 1)
             return output
 
         def _perform_classification_pipeline(new_sample: pd.DataFrame):
