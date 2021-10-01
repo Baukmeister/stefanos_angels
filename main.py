@@ -21,7 +21,7 @@ categorical_columns = ['sex (1 = male; 0 = female)',
                     'exercise induced angina (1 = yes; 0 = no)',
                     'slope of the peak exercise ST segment (1 = upsloping; 2 = flat; 3 = downsloping)',
                     'number of major vessels (0-3) colored by flourosopy',
-                    'thal 3 = normal; 6 = fixed defect; 7 = reversable defect']
+                    'thal (3 = normal; 6 = fixed defect; 7 = reversable defect)']
 non_normalization_colums = ['num']
 model_type = 'lgr'
 
@@ -47,7 +47,7 @@ selected_dataset = selected_dataset.rename(columns = {'sex':'sex (1 = male; 0 = 
                                                     'oldpeak':'ST depression induced by exercise relative to rest',
                                                     'slope':'slope of the peak exercise ST segment (1 = upsloping; 2 = flat; 3 = downsloping)',
                                                     'ca':'number of major vessels (0-3) colored by flourosopy',
-                                                    'thal':'thal 3 = normal; 6 = fixed defect; 7 = reversable defect'})
+                                                    'thal':'thal (3 = normal; 6 = fixed defect; 7 = reversable defect)'})
 
 # Turn the predicted categorical attribute into binary (1=Heart disease, 0=No heart disease)
 binary_response_dataset = binary_transformation(selected_dataset)
