@@ -94,7 +94,7 @@ cv_models = {
     "Support_Vector_Machine": create_model(X_train, y_train, "svm", fit_model=False)
 }
 
-cv_result = cross_validation_training(entire_train_set, scoring=["accuracy", "recall", "precision", "f1"],
+cv_result = cross_validation_training(entire_train_set, scoring=["accuracy", "recall", "precision", "f1", "roc_auc"],
                                       models=cv_models, cv=5)
 print(cv_result)
 

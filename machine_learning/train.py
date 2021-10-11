@@ -119,7 +119,7 @@ def _train_svm(X_train: pd.DataFrame, y_train: pd.DataFrame, kernel='linear'):
     return svclassifier
 
 
-def cross_validation_training(dataset: pd.DataFrame, models: dict, scoring=["accuracy", "recall", "precision", "f1"], cv=5):
+def cross_validation_training(dataset: pd.DataFrame, models: dict, scoring=["accuracy", "recall", "precision", "f1", "roc_auc"], cv=5):
     """
     Method for training and performing cross validation on a group of models
     :param dataset: the dataset that should be split into features and labels and then used for cross validation and training for each model
@@ -133,7 +133,7 @@ def cross_validation_training(dataset: pd.DataFrame, models: dict, scoring=["acc
     y = dataset['num']
 
     # instantiate a dataframe that will hold the mean measures for each model
-    cv_results = pd.DataFrame(columns=['mean accuracy', 'mean f1', 'mean recall', 'mean precision'], index=models.keys())
+    cv_results = pd.DataFrame(columns=['mean accuracy', 'mean f1', 'mean recall', 'mean precision', 'mean AUC'], index=models.keys())
 
     # iterating over the unfitted dictionary of models performing cross validation
     for model_name, model in models.items():
@@ -147,6 +147,7 @@ def cross_validation_training(dataset: pd.DataFrame, models: dict, scoring=["acc
         cv_results['mean f1'][model_name] = scores.at['test_f1', 'mean']
         cv_results['mean recall'][model_name] = scores.at['test_recall', 'mean']
         cv_results['mean precision'][model_name] = scores.at['test_precision', 'mean']
+        cv_results['mean AUC'][model_name] = scores.at['test_roc_auc', 'mean']
     
     # return a sorted cv_result by mean accuracy and mean f1
     return cv_results.sort_values(by=['mean accuracy', 'mean f1'], ascending=False)
