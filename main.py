@@ -69,7 +69,7 @@ selected_dataset = selected_dataset.rename(columns={'sex': 'sex (1 = male; 0 = f
 binary_response_dataset = binary_transformation(selected_dataset)
 
 # perform normalization and other pre-processing
-imputed_dataset = impute(binary_response_dataset, "median")
+imputed_dataset = impute(binary_response_dataset, "mean")
 normalized_dataset, Normalizer = normalize(imputed_dataset, "z",
                                            excluded_cols=non_normalization_colums + categorical_columns)
 encoded_dataset, Encoder = encode(normalized_dataset, categorical_columns)

@@ -18,17 +18,17 @@ def impute(dataset: pd.DataFrame, strategy) -> pd.DataFrame:
 
     if strategy == "drop":
         for col in dataset.columns:
-            imputed_dataset = imputed_dataset[col != "?"]
+            imputed_dataset = imputed_dataset[imputed_dataset[col] != "?"]
         return imputed_dataset
 
     if strategy == "median":
         for col in dataset.columns:
-            median_value = imputed_dataset[imputed_dataset[col] != "?"][col].median()
+            median_value = imputed_dataset[imputed_dataset[col] != "?"][col].astype(float).median()
             imputed_dataset[col] = imputed_dataset[col].replace("?", median_value)
         return imputed_dataset
 
     if strategy == "mean":
         for col in dataset.columns:
-            mean_value = imputed_dataset[imputed_dataset[col] != "?"][col].mean()
+            mean_value = imputed_dataset[imputed_dataset[col] != "?"][col].astype(float).mean()
             imputed_dataset[col] = imputed_dataset[col].replace("?", mean_value)
         return imputed_dataset
