@@ -1,3 +1,9 @@
+from typing import List, Union, Any
+
+from pandas import Series, DataFrame
+from pandas.core.generic import NDFrame
+from pandas.io.parsers import TextFileReader
+
 from dash_app.app import *
 from data_exploration.visualization import *
 from machine_learning.eval import *
@@ -15,13 +21,13 @@ print("Hey there my angels!")
 CONFIG
 """
 categorical_columns = ['sex (1 = male; 0 = female)',
-                    'chest pain type (1 = typical angina; 2 = atypical angina; 3 = non-anginal pain; 4 = asymptomatic)',
-                    'fasting blood sugar > 120 mg/dl (1 = true; 0 = false)',
-                    'resting electrocardiographic results (0 = normal; 1 = having ST-T; 2 = hypertrophy)',
-                    'exercise induced angina (1 = yes; 0 = no)',
-                    'slope of the peak exercise ST segment (1 = upsloping; 2 = flat; 3 = downsloping)',
-                    'number of major vessels (0-3) colored by flourosopy',
-                    'thal (3 = normal; 6 = fixed defect; 7 = reversable defect)']
+                       'chest pain type (1 = typical angina; 2 = atypical angina; 3 = non-anginal pain; 4 = asymptomatic)',
+                       'fasting blood sugar > 120 mg/dl (1 = true; 0 = false)',
+                       'resting electrocardiographic results (0 = normal; 1 = having ST-T; 2 = hypertrophy)',
+                       'exercise induced angina (1 = yes; 0 = no)',
+                       'slope of the peak exercise ST segment (1 = upsloping; 2 = flat; 3 = downsloping)',
+                       'number of major vessels (0-3) colored by flourosopy',
+                       'thal (3 = normal; 6 = fixed defect; 7 = reversable defect)']
 non_normalization_colums = ['num']
 model_type = 'lgr'
 
@@ -32,22 +38,32 @@ RUNNING IT
 # get datasets
 datasets = load_datasets(Path("./datasets"))
 
+# uniformed column names in all datasets
+for i in range(len(datasets)):
+    datasets[i] = datasets[i].rename(columns={'class\r': 'num'})
+    datasets[i] = datasets[i].rename(columns={'class': 'num'})
+    #print(datasets[i].head())
+    i=i+1
+
+# merge the datasets
+datasets[0] = pd.concat([datasets[0], datasets[1], datasets[2], datasets[3]], join='outer', ignore_index=True)
+
 # chose the desired dataset
 selected_dataset = datasets[0]
 
 # renaming columns
-selected_dataset = selected_dataset.rename(columns = {'sex':'sex (1 = male; 0 = female)',
-                                                    'cp':'chest pain type (1 = typical angina; 2 = atypical angina; 3 = non-anginal pain; 4 = asymptomatic)',
+selected_dataset = selected_dataset.rename(columns={'sex': 'sex (1 = male; 0 = female)',
+                                                    'cp': 'chest pain type (1 = typical angina; 2 = atypical angina; 3 = non-anginal pain; 4 = asymptomatic)',
                                                     'trestbps': 'resting blood pressure',
-                                                    'chol':'cholestoral',
-                                                    'fbs':'fasting blood sugar > 120 mg/dl (1 = true; 0 = false)',
-                                                    'restecg':'resting electrocardiographic results (0 = normal; 1 = having ST-T; 2 = hypertrophy)',
-                                                    'thalach':'maximum heart rate achieved',
-                                                    'exang':'exercise induced angina (1 = yes; 0 = no)',
-                                                    'oldpeak':'ST depression induced by exercise relative to rest',
-                                                    'slope':'slope of the peak exercise ST segment (1 = upsloping; 2 = flat; 3 = downsloping)',
-                                                    'ca':'number of major vessels (0-3) colored by flourosopy',
-                                                    'thal':'thal (3 = normal; 6 = fixed defect; 7 = reversable defect)'})
+                                                    'chol': 'cholestoral',
+                                                    'fbs': 'fasting blood sugar > 120 mg/dl (1 = true; 0 = false)',
+                                                    'restecg': 'resting electrocardiographic results (0 = normal; 1 = having ST-T; 2 = hypertrophy)',
+                                                    'thalach': 'maximum heart rate achieved',
+                                                    'exang': 'exercise induced angina (1 = yes; 0 = no)',
+                                                    'oldpeak': 'ST depression induced by exercise relative to rest',
+                                                    'slope': 'slope of the peak exercise ST segment (1 = upsloping; 2 = flat; 3 = downsloping)',
+                                                    'ca': 'number of major vessels (0-3) colored by flourosopy',
+                                                    'thal': 'thal (3 = normal; 6 = fixed defect; 7 = reversable defect)'})
 
 # Turn the predicted categorical attribute into binary (1=Heart disease, 0=No heart disease)
 binary_response_dataset = binary_transformation(selected_dataset)
@@ -73,10 +89,12 @@ if model_type == 'gbc':
     model = create_model(X_train, y_train, model_type, n_estimators=100, learning_rate=1.0, max_depth=2, random_state=0)
 
 if model_type == 'rnd':
-    model = create_model(X_train, y_train, model_type, n_estimators=100, max_depth=10, criterion="entropy", random_state=0)
+    model = create_model(X_train, y_train, model_type, n_estimators=100, max_depth=10, criterion="entropy",
+                         random_state=0)
 
 if model_type == 'dtr':
-    model = create_model(X_train, y_train, model_type, splitter="best", max_depth=10, criterion="entropy", random_state=0)
+    model = create_model(X_train, y_train, model_type, splitter="best", max_depth=10, criterion="entropy",
+                         random_state=0)
 
 if model_type == 'lgr':
     model = create_model(X_train, y_train, model_type)
@@ -87,9 +105,12 @@ if model_type == 'svm':
 # cross validation
 cv_models = {
     "KNN": create_model(X_train, y_train, "knn", fit_model=False, n_neighbors=5),
-    "Gradient_Boosting_Classifier": create_model(X_train, y_train, "gbc", fit_model=False, n_estimators=100, learning_rate=1.0, max_depth=2, random_state=0),
-    "Random_Forest_Classifier": create_model(X_train, y_train, "rnd", fit_model=False, n_estimators=100, max_depth=10, criterion="entropy", random_state=0),
-    "Decision_Tree": create_model(X_train, y_train, "dtr", fit_model=False, splitter="best", max_depth=10, criterion="entropy", random_state=0),
+    "Gradient_Boosting_Classifier": create_model(X_train, y_train, "gbc", fit_model=False, n_estimators=100,
+                                                 learning_rate=1.0, max_depth=2, random_state=0),
+    "Random_Forest_Classifier": create_model(X_train, y_train, "rnd", fit_model=False, n_estimators=100, max_depth=10,
+                                             criterion="entropy", random_state=0),
+    "Decision_Tree": create_model(X_train, y_train, "dtr", fit_model=False, splitter="best", max_depth=10,
+                                  criterion="entropy", random_state=0),
     "Linear_Regression": create_model(X_train, y_train, "lgr", fit_model=False),
     "Support_Vector_Machine": create_model(X_train, y_train, "svm", fit_model=False)
 }
@@ -121,3 +142,4 @@ server = app.server
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+
