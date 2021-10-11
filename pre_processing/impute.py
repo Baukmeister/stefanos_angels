@@ -10,6 +10,12 @@ def impute(dataset: pd.DataFrame, strategy) -> pd.DataFrame:
     """
     imputed_dataset = dataset
 
+    if strategy == "drop2":
+        for col in imputed_dataset.columns:
+            if imputed_dataset.loc[col].count("?") > 300:
+                imputed_dataset.drop(col, axis=1)
+        return imputed_dataset
+
     if strategy == "drop":
         for col in dataset.columns:
             imputed_dataset = imputed_dataset[col != "?"]
