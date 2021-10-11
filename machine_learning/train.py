@@ -150,8 +150,8 @@ def cross_validation_training(dataset: pd.DataFrame, models: dict, scoring=["acc
         cv_results['mean AUC'][model_name] = scores.at['test_roc_auc', 'mean']
     
     # return a sorted cv_result by mean accuracy and mean f1
-rounded_cv_results = cv_results.astype(float).round(3)
+    rounded_cv_results = cv_results.astype(float).round(3)
 
-# return a sorted cv_result by mean accuracy and mean f1
-return rounded_cv_results.sort_values(by=['mean accuracy', 'mean f1'], ascending=False)
+    # return a sorted cv_result by mean accuracy and mean f1
+    return rounded_cv_results.sort_values(by=['mean accuracy', 'mean f1'], ascending=False)
 
