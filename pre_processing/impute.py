@@ -11,9 +11,13 @@ def impute(dataset: pd.DataFrame, strategy) -> pd.DataFrame:
     imputed_dataset = dataset
 
     if strategy == "drop2":
+        # remove columns with more than 300 ? rows
+        for col in dataset.columns:
+            if imputed_dataset[col].eq("?").sum() > 300:
+                imputed_dataset = imputed_dataset.drop(col, axis=1)
+        # remove rows with ?
         for col in imputed_dataset.columns:
-            if imputed_dataset.loc[col].count("?") > 300:
-                imputed_dataset.drop(col, axis=1)
+            imputed_dataset = imputed_dataset[imputed_dataset[col] != "?"]
         return imputed_dataset
 
     if strategy == "drop":
