@@ -20,14 +20,23 @@ print("Hey there my angels!")
 """
 CONFIG
 """
-categorical_columns = ['sex (1 = male; 0 = female)',
+# categorical columns with all impute strategies except drop2
+"""categorical_columns = ['sex (1 = male; 0 = female)',
                        'chest pain type (1 = typical angina; 2 = atypical angina; 3 = non-anginal pain; 4 = asymptomatic)',
                        'fasting blood sugar > 120 mg/dl (1 = true; 0 = false)',
                        'resting electrocardiographic results (0 = normal; 1 = having ST-T; 2 = hypertrophy)',
                        'exercise induced angina (1 = yes; 0 = no)',
                        'slope of the peak exercise ST segment (1 = upsloping; 2 = flat; 3 = downsloping)',
                        'number of major vessels (0-3) colored by flourosopy',
-                       'thal (3 = normal; 6 = fixed defect; 7 = reversable defect)']
+                       'thal (3 = normal; 6 = fixed defect; 7 = reversable defect)']"""
+
+# categorical columns with drop2 as impute method
+categorical_columns = ['sex (1 = male; 0 = female)',
+                       'chest pain type (1 = typical angina; 2 = atypical angina; 3 = non-anginal pain; 4 = asymptomatic)',
+                       'fasting blood sugar > 120 mg/dl (1 = true; 0 = false)',
+                       'resting electrocardiographic results (0 = normal; 1 = having ST-T; 2 = hypertrophy)',
+                       'exercise induced angina (1 = yes; 0 = no)']
+
 non_normalization_colums = ['num']
 model_type = 'lgr'
 
