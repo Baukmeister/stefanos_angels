@@ -10,17 +10,18 @@ def impute(dataset: pd.DataFrame, strategy) -> pd.DataFrame:
     """
     imputed_dataset = dataset
 
-    if strategy == "drop2":
+    if strategy == "drop_300":
         # remove columns with more than 300 ? rows
         for col in dataset.columns:
             if imputed_dataset[col].eq("?").sum() > 300:
                 imputed_dataset = imputed_dataset.drop(col, axis=1)
-        # remove rows with ?
+        # replace missing values in columns with less than 300 ? rows
         for col in imputed_dataset.columns:
-            imputed_dataset = imputed_dataset[imputed_dataset[col] != "?"]
+            median_value = imputed_dataset[imputed_dataset[col] != "?"][col].astype(float).median()
+            imputed_dataset[col] = imputed_dataset[col].replace("?", median_value)
         return imputed_dataset
 
-    if strategy == "drop":
+    if strategy == "drop_row":
         for col in dataset.columns:
             imputed_dataset = imputed_dataset[imputed_dataset[col] != "?"]
         return imputed_dataset
