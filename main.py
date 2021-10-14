@@ -96,10 +96,12 @@ cv_models = {
 
 cv_result = cross_validation_training(entire_train_set, scoring=["accuracy", "recall", "precision", "f1", "roc_auc"],
                                       models=cv_models, cv=5)
-print(cv_result)
 
 # evaluate the model
 eval_result = evaluate_model(model, X_test, y_test)
+
+# creating a instance explainer object on the training data
+explainer = create_instance_explainer(X_train)
 
 # start the web app
 dash_server = DashServer(
@@ -114,7 +116,8 @@ dash_server = DashServer(
     encoding_func=encode,
     model=model,
     model_type=model_type,
-    module_name=__name__
+    module_name=__name__,
+    instance_explainer = explainer
 )
 app = dash_server.start()
 server = app.server

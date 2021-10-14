@@ -1,5 +1,6 @@
 from typing import Callable
 import dash
+from lime import explanation
 from sklearn.base import TransformerMixin, BaseEstimator
 
 from dash_app.html_elements import *
@@ -7,7 +8,7 @@ from dash.dependencies import Input, Output, State
 import os
 from pathlib import *
 import warnings
-
+import numpy as np
 
 class DashServer:
     """
@@ -40,6 +41,7 @@ class DashServer:
             model: BaseEstimator,
             model_type: str,
             module_name,
+            instance_explainer,
     ) -> object:
         self.target_col = target_col
         self.categorical_cols = categorical_cols
@@ -53,6 +55,7 @@ class DashServer:
         self.df = df
         self.eval_results = eval_results
         self.module_name = module_name
+        self.instance_explainer = instance_explainer
 
     def start(self):
         """
@@ -69,6 +72,7 @@ class DashServer:
         categorical_cols = self.categorical_cols
         encoding_func = self.encoding_func
         model = self.model
+        instance_explainer = self.instance_explainer
 
         app.layout = html.Div([
             html.H1("🚀A-TEAM🚀 -- Model: {}".format(self.model_type)),
@@ -126,7 +130,10 @@ class DashServer:
                 new_sample.columns = [col_name for col_name in df.columns]
 
                 # predict new sample
-                prediction = _perform_classification_pipeline(new_sample)
+                prediction, encoded_sample_no_target = _perform_classification_pipeline(new_sample)
+
+                # create expainer object
+                explainer_object = _perform_explaination(encoded_sample_no_target, model)
 
                 print("Classified sample as class {}".format(prediction))
                 return prediction, "classification-output-container green"
@@ -162,6 +169,22 @@ class DashServer:
             encoded_sample, _ = encoding_func(normalized_sample, categorical_cols, encoder)
             encoded_sample_no_target = encoded_sample.loc[:, encoded_sample.columns != target_col]
             prediction = model.predict(encoded_sample_no_target)
-            return prediction
+            return prediction, encoded_sample_no_target
+        
+        def _perform_explaination(sample, model):    
+            explaination = instance_explainer.explain_instance(
+            data_row=np.array(sample)[0],
+            predict_fn=model.predict_proba)
+
+            obj = html.Iframe(
+            # Javascript is disabled from running in an IFrame for security reasons
+            # Static HTML only!!!
+            srcDoc=explaination.as_html(),
+            width='100%',
+            height='800px',
+            style={'border': '2px #d3d3d3 solid'},
+            )
+
+            return obj
 
         return app
