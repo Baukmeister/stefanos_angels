@@ -113,6 +113,9 @@ class DashServer:
                         html.Div(id="classification-output", className="classification-output-container")
                     ])
                 ], className="new-input-container")
+                #,html.Div(className="explanation-container", children=[
+                    #html.H2("Output explanation:"),
+                    #dcc.Loading(id='explainer-obj', type="default")]),
                 ]),
             ])
         ])
@@ -120,6 +123,7 @@ class DashServer:
         @app.callback(
             Output("classification-output", "children"),
             Output("classification-output", "className"),
+            #Output("explainer-obj", "className"),
             Input("classify-new-sample", "n_clicks"),
             [State("{}-input".format(col_name), 'value', ) for col_name in self.df.columns if col_name != target_col],
             prevent_initial_call=True
@@ -136,7 +140,7 @@ class DashServer:
                 explainer_object = _perform_explaination(encoded_sample_no_target, model)
 
                 print("Classified sample as class {}".format(prediction))
-                return prediction, "classification-output-container green"
+                return prediction, "classification-output-container green"#, explainer_object
             except Exception as e:
                 warnings.warn("Classification error: {}".format(str(e)))
                 return "Error \n (more info in console)", "classification-output-container red"
