@@ -38,7 +38,7 @@ categorical_columns = ['sex (1 = male; 0 = female)',
                        'exercise induced angina (1 = yes; 0 = no)']
 
 non_normalization_colums = ['num']
-model_type = 'lgr'
+model_type = 'rnd'
 
 """
 RUNNING IT
@@ -51,7 +51,6 @@ datasets = load_datasets(Path("./datasets"))
 for i in range(len(datasets)):
     datasets[i] = datasets[i].rename(columns={'class\r': 'num'})
     datasets[i] = datasets[i].rename(columns={'class': 'num'})
-    #print(datasets[i].head())
     i=i+1
 
 # merge the datasets
@@ -87,10 +86,10 @@ encoded_dataset, Encoder = encode(normalized_dataset, categorical_columns)
 
 # test/train split
 X_train, X_test, y_train, y_test = custom_train_test_split(encoded_dataset, 'num', random_state=10)
-entire_train_set = pd.concat([X_test, y_test], axis=1)
+entire_train_set = pd.concat([X_train, y_train], axis=1)
 
 # train hyperparameters
-# hyperTrain(X_train, y_train)
+#hyperTrain(X_train, y_train)
 
 # train a model
 if model_type == 'knn':
