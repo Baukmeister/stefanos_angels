@@ -51,7 +51,7 @@ datasets = load_datasets(Path("./datasets"))
 for i in range(len(datasets)):
     datasets[i] = datasets[i].rename(columns={'class\r': 'num'})
     datasets[i] = datasets[i].rename(columns={'class': 'num'})
-    i=i+1
+    i = i + 1
 
 # merge the datasets
 datasets[0] = pd.concat([datasets[0], datasets[1], datasets[2], datasets[3]], join='outer', ignore_index=True)
@@ -89,7 +89,7 @@ X_train, X_test, y_train, y_test = custom_train_test_split(encoded_dataset, 'num
 entire_train_set = pd.concat([X_train, y_train], axis=1)
 
 # train hyperparameters
-#hyperTrain(X_train, y_train)
+# hyperTrain(X_train, y_train)
 
 # train a model
 if model_type == 'knn':
@@ -119,6 +119,8 @@ cv_models = {
                                                  learning_rate=1.0, max_depth=2, random_state=0),
     "Random_Forest_Classifier": create_model(X_train, y_train, "rnd", fit_model=False, n_estimators=100, max_depth=10,
                                              criterion="entropy", random_state=0),
+    "Random_Forest_Classifier_H": create_model(X_train, y_train, "rnd", fit_model=False, n_estimators=1122, max_depth=10,
+                                              criterion="entropy", random_state=0),
     "Decision_Tree": create_model(X_train, y_train, "dtr", fit_model=False, splitter="best", max_depth=10,
                                   criterion="entropy", random_state=0),
     "Linear_Regression": create_model(X_train, y_train, "lgr", fit_model=False),
@@ -152,4 +154,3 @@ server = app.server
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-
