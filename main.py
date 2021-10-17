@@ -60,7 +60,7 @@ encoded_dataset, Encoder = encode(normalized_dataset, categorical_columns)
 
 # test/train split
 X_train, X_test, y_train, y_test = custom_train_test_split(encoded_dataset, 'num', random_state=10)
-entire_train_set = pd.concat([X_test, y_test], axis=1)
+entire_train_set = pd.concat([X_train, y_train], axis=1)
 
 # train hyperparameters
 # hyperTrain(X_train, y_train)
