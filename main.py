@@ -123,7 +123,7 @@ cv_models = {
                                               criterion="entropy", random_state=0),
     "Decision_Tree": create_model(X_train, y_train, "dtr", fit_model=False, splitter="best", max_depth=10,
                                   criterion="entropy", random_state=0),
-    "Linear_Regression": create_model(X_train, y_train, "lgr", fit_model=False),
+    "Logistic_Regression": create_model(X_train, y_train, "lgr", fit_model=False),
     "Support_Vector_Machine": create_model(X_train, y_train, "svm", fit_model=False)
 }
 
