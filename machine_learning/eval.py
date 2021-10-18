@@ -27,7 +27,6 @@ def create_instance_explainer(train_data):
     instance_explainer = lime_tabular.LimeTabularExplainer(
     training_data=np.array(train_data),
     feature_names = train_data.columns,
-    class_names=[1, 0],
     mode='classification')
     
     return instance_explainer
