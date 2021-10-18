@@ -78,7 +78,7 @@ binary_response_dataset = binary_transformation(selected_dataset)
 
 # perform normalization and other pre-processing
 imputed_dataset = impute(binary_response_dataset, "drop_300")
-imputed_dataset = imputed_dataset.reset_index()
+imputed_dataset = imputed_dataset.reset_index(drop=True)
 
 normalized_dataset, Normalizer = normalize(imputed_dataset, "z",
                                            excluded_cols=non_normalization_colums + categorical_columns)
@@ -136,8 +136,8 @@ eval_result = evaluate_model(model, X_test, y_test)
 
 # start the web app
 dash_server = DashServer(
-    df=selected_dataset,
-    df_name="Cleveland",
+    df=imputed_dataset,
+    df_name="All datasets",
     target_col="num",
     categorical_cols=categorical_columns,
     cv_result=cv_result,
