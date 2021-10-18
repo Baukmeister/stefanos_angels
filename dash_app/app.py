@@ -175,14 +175,18 @@ class DashServer:
             prediction = model.predict(encoded_sample_no_target)
             return prediction, encoded_sample_no_target
         
-        def _perform_explaination(sample, model):    
+        def _perform_explaination(sample, model):
+            """
+            Create a lime explanation for a new sample
+            :param sample: a new data instance provided by the dash that is to be explained
+            :param: the model we used for prediciting the class lable for the new sample
+            :return: the lime explanation for the sample
+            """  
             explaination = instance_explainer.explain_instance(
             data_row=np.array(sample)[0],
             predict_fn=model.predict_proba)
 
             obj = html.Iframe(
-            # Javascript is disabled from running in an IFrame for security reasons
-            # Static HTML only!!!
             srcDoc=explaination.as_html(),
             width='100%',
             height='800px',

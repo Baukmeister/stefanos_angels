@@ -24,6 +24,11 @@ def evaluate_model(model, X_test, y_test):
     return results
 
 def create_instance_explainer(train_data):
+    """
+    Create a lime explainer object that is fitted to our training data to explain new patient classifications
+    :param train_data: The training data used to fit the explainer object from lime
+    :return: explainer object fitted to the train data 
+    """
     instance_explainer = lime_tabular.LimeTabularExplainer(
     training_data=np.array(train_data),
     feature_names = train_data.columns,
