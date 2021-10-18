@@ -99,7 +99,7 @@ if model_type == 'gbc':
     model = create_model(X_train, y_train, model_type, n_estimators=100, learning_rate=1.0, max_depth=2, random_state=0)
 
 if model_type == 'rnd':
-    model = create_model(X_train, y_train, model_type, n_estimators=100, max_depth=10, criterion="entropy",
+    model = create_model(X_train, y_train, model_type, n_estimators=1122, max_depth=10, criterion="entropy",
                          random_state=0)
 
 if model_type == 'dtr':
