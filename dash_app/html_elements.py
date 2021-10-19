@@ -44,14 +44,18 @@ def get_model_viz_html(eval_results: dict, cv_result: pd.DataFrame):
             html.Br(),
             html.Span("Accuracy: {}".format(eval_results['accuracy'])),
             html.Br(),
-            html.Span("Recall: {}".format(eval_results['recall']))
+            html.Span("Recall: {}".format(eval_results['recall'])),
+            html.Br(),
+            html.Span("Precision: {}".format(eval_results['precision'])),
+            html.Br(),
+            html.Span("AUC ROC: {}".format(eval_results['AUC']))
         ]),
         html.H3("MODEL VIZ"),
         html.Div([
             html.H4("Confusion Matrix"),
             dcc.Graph(figure=fig),
         ]),
-        html.H3("MODEL COMPRISONS"),
+        html.H3("MODEL COMPARISON"),
         dash_table.DataTable(
             id='cv-table',
             columns=[{"name": i, "id": i} for i in cv_result.columns],
