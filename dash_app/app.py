@@ -15,6 +15,7 @@ class DashServer:
     Class for handling the setup and running of the Dash Server
     
     :param df: the dataset used for training the model
+    :param df_col_details: a dict containing the detailed names for the df columns
     :param df_name: the name of the dataset (used for displaying on the website)
     :param target_col: name of the target variable string
     :param categorical_cols: the names of the columns that hold categorical variables
@@ -31,6 +32,7 @@ class DashServer:
             self,
             df: pd.DataFrame,
             df_name: str,
+            df_col_details: dict,
             target_col: str,
             categorical_cols: [],
             cv_result: pd.DataFrame,
@@ -43,6 +45,7 @@ class DashServer:
             module_name,
             instance_explainer,
     ) -> object:
+        self.df_col_details = df_col_details
         self.target_col = target_col
         self.categorical_cols = categorical_cols
         self.encoding_func = encoding_func
@@ -89,7 +92,7 @@ class DashServer:
                         id='input-fields',
                         children=[
                                      html.Div(className="input-with-label-container", children=[
-                                         html.Label(col_name + ":", className="input-label",
+                                         html.Label(self.df_col_details[col_name] + ":", className="input-label",
                                                     htmlFor="{}-input".format(col_name)),
                                          dcc.Input(
                                              id="{}-input".format(col_name),
