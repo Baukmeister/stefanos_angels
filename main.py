@@ -113,7 +113,7 @@ cv_models = {
 }
 
 cv_result = cross_validation_training(entire_train_set, scoring=["accuracy", "recall", "precision", "f1", "roc_auc"],
-                                      models=cv_models, cv=5)
+                                      models=cv_models, cv=10)
 
 # evaluate the model
 eval_result = evaluate_model(model, X_test, y_test)
