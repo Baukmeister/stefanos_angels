@@ -1,19 +1,12 @@
-from typing import List, Union, Any
-
-from pandas import Series, DataFrame
-from pandas.core.generic import NDFrame
-from pandas.io.parsers import TextFileReader
-
 from dash_app.app import *
 from data_exploration.visualization import *
 from machine_learning.eval import *
-from machine_learning.hyper import hyperTrain
 from machine_learning.train import *
-from pre_processing.normalize import *
-from pre_processing.impute import *
-from pre_processing.split_dataset import *
-from pre_processing.one_hot_encoding import *
 from pre_processing.binary_class_transformation import *
+from pre_processing.impute import *
+from pre_processing.normalize import *
+from pre_processing.one_hot_encoding import *
+from pre_processing.split_dataset import *
 
 print("Hey there my angels!")
 
@@ -77,7 +70,7 @@ selected_dataset = selected_dataset.rename(columns={'sex': 'sex (1 = male; 0 = f
 binary_response_dataset = binary_transformation(selected_dataset)
 
 # perform normalization and other pre-processing
-imputed_dataset = impute(binary_response_dataset, "drop_300")
+imputed_dataset = impute(binary_response_dataset, "drop_n", drop_threshold=301)
 imputed_dataset = imputed_dataset.reset_index(drop=True)
 
 normalized_dataset, Normalizer = normalize(imputed_dataset, "z",
@@ -119,8 +112,9 @@ cv_models = {
                                                  learning_rate=1.0, max_depth=2, random_state=0),
     "Random_Forest_Classifier": create_model(X_train, y_train, "rnd", fit_model=False, n_estimators=100, max_depth=10,
                                              criterion="entropy", random_state=0),
-    "Random_Forest_Classifier_H": create_model(X_train, y_train, "rnd", fit_model=False, n_estimators=1122, max_depth=10,
-                                              criterion="entropy", random_state=0),
+    "Random_Forest_Classifier_H": create_model(X_train, y_train, "rnd", fit_model=False, n_estimators=1122,
+                                               max_depth=10,
+                                               criterion="entropy", random_state=0),
     "Decision_Tree": create_model(X_train, y_train, "dtr", fit_model=False, splitter="best", max_depth=10,
                                   criterion="entropy", random_state=0),
     "Logistic_Regression": create_model(X_train, y_train, "lgr", fit_model=False),
