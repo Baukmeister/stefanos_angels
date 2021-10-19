@@ -13,23 +13,14 @@ print("Hey there my angels!")
 """
 CONFIG
 """
-# categorical columns with all impute strategies except drop2
-"""categorical_columns = ['sex (1 = male; 0 = female)',
-                       'chest pain type (1 = typical angina; 2 = atypical angina; 3 = non-anginal pain; 4 = asymptomatic)',
-                       'fasting blood sugar > 120 mg/dl (1 = true; 0 = false)',
-                       'resting electrocardiographic results (0 = normal; 1 = having ST-T; 2 = hypertrophy)',
-                       'exercise induced angina (1 = yes; 0 = no)',
-                       'slope of the peak exercise ST segment (1 = upsloping; 2 = flat; 3 = downsloping)',
-                       'number of major vessels (0-3) colored by flourosopy',
-                       'thal (3 = normal; 6 = fixed defect; 7 = reversable defect)']"""
-
-# categorical columns with drop300 as impute method
-categorical_columns = ['sex (1 = male; 0 = female)',
-                       'chest pain type (1 = typical angina; 2 = atypical angina; 3 = non-anginal pain; 4 = asymptomatic)',
-                       'fasting blood sugar > 120 mg/dl (1 = true; 0 = false)',
-                       'resting electrocardiographic results (0 = normal; 1 = having ST-T; 2 = hypertrophy)',
-                       'exercise induced angina (1 = yes; 0 = no)']
-
+categorical_columns = ['sex',
+                       'cp',
+                       'fbs',
+                       'restecg',
+                       'exang',
+                       'slope',
+                       'ca',
+                       'thal']
 non_normalization_colums = ['num']
 model_type = 'rnd'
 
@@ -52,19 +43,20 @@ datasets[0] = pd.concat([datasets[0], datasets[1], datasets[2], datasets[3]], jo
 # chose the desired dataset
 selected_dataset = datasets[0]
 
-# renaming columns
-selected_dataset = selected_dataset.rename(columns={'sex': 'sex (1 = male; 0 = female)',
-                                                    'cp': 'chest pain type (1 = typical angina; 2 = atypical angina; 3 = non-anginal pain; 4 = asymptomatic)',
-                                                    'trestbps': 'resting blood pressure',
-                                                    'chol': 'cholestoral',
-                                                    'fbs': 'fasting blood sugar > 120 mg/dl (1 = true; 0 = false)',
-                                                    'restecg': 'resting electrocardiographic results (0 = normal; 1 = having ST-T; 2 = hypertrophy)',
-                                                    'thalach': 'maximum heart rate achieved',
-                                                    'exang': 'exercise induced angina (1 = yes; 0 = no)',
-                                                    'oldpeak': 'ST depression induced by exercise relative to rest',
-                                                    'slope': 'slope of the peak exercise ST segment (1 = upsloping; 2 = flat; 3 = downsloping)',
-                                                    'ca': 'number of major vessels (0-3) colored by flourosopy',
-                                                    'thal': 'thal (3 = normal; 6 = fixed defect; 7 = reversable defect)'})
+# defining detailed column names
+detailed_names = {'age': 'age',
+                  'sex':'sex (1 = male; 0 = female)',
+                  'cp':'chest pain type (1 = typical angina; 2 = atypical angina; 3 = non-anginal pain; 4 = asymptomatic)',
+                  'trestbps': 'resting blood pressure',
+                  'chol':'cholestoral',
+                  'fbs':'fasting blood sugar > 120 mg/dl (1 = true; 0 = false)',
+                  'restecg':'resting electrocardiographic results (0 = normal; 1 = having ST-T; 2 = hypertrophy)',
+                  'thalach':'maximum heart rate achieved',
+                  'exang':'exercise induced angina (1 = yes; 0 = no)',
+                  'oldpeak':'ST depression induced by exercise relative to rest',
+                  'slope':'slope of the peak exercise ST segment (1 = upsloping; 2 = flat; 3 = downsloping)',
+                  'ca':'number of major vessels (0-3) colored by flourosopy',
+                  'thal':'thal (3 = normal; 6 = fixed defect; 7 = reversable defect)'}
 
 # Turn the predicted categorical attribute into binary (1=Heart disease, 0=No heart disease)
 binary_response_dataset = binary_transformation(selected_dataset)
@@ -121,15 +113,18 @@ cv_models = {
 }
 
 cv_result = cross_validation_training(entire_train_set, scoring=["accuracy", "recall", "precision", "f1", "roc_auc"],
-                                      models=cv_models, cv=5)
-print(cv_result)
+                                      models=cv_models, cv=10)
 
 # evaluate the model
 eval_result = evaluate_model(model, X_test, y_test)
 
+# creating a instance explainer object on the training data
+explainer = create_instance_explainer(X_train)
+
 # start the web app
 dash_server = DashServer(
     df=imputed_dataset,
+    df_col_details=detailed_names,
     df_name="All datasets",
     target_col="num",
     categorical_cols=categorical_columns,
@@ -140,7 +135,8 @@ dash_server = DashServer(
     encoding_func=encode,
     model=model,
     model_type=model_type,
-    module_name=__name__
+    module_name=__name__,
+    instance_explainer = explainer
 )
 app = dash_server.start()
 server = app.server

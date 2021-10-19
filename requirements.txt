@@ -2,4 +2,6 @@ pandas
 matplotlib
 scikit-learn
 dash
+dash_daq
 gunicorn
+lime
