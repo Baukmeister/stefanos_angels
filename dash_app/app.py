@@ -1,14 +1,16 @@
+import os
+import warnings
+from pathlib import *
 from typing import Callable
+
 import dash
-from lime import explanation
+import numpy as np
+from dash.dependencies import Input, Output, State
 from sklearn.base import TransformerMixin, BaseEstimator
 
 from dash_app.html_elements import *
-from dash.dependencies import Input, Output, State
-import os
-from pathlib import *
-import warnings
-import numpy as np
+import dash_daq as daq
+
 
 class DashServer:
     """
@@ -108,7 +110,7 @@ class DashServer:
                                          html.Button('Classify', id="classify-new-sample", disabled=True),
                                          html.Button('Clear Values', id="clear-inputs")
                                      ],
-                                     className="input-buttons-container")
+                                         className="input-buttons-container")
                                  ]
                         , className="input-field-container"),
                     html.Div(className="result-container", children=[
@@ -116,31 +118,53 @@ class DashServer:
                         html.Div(id="classification-output", className="classification-output-container")
                     ])
                 ], className="new-input-container")
-                ,html.Div(className="explanation-container", children=[
-                    html.H2("Output explanation:"),
-                    dcc.Loading(id='explainer-obj', type="default")]),
+                    , html.Div(className="explanation-container", children=[
+                    html.Div(className="explanation-container-header", children=[
+                        html.H2("Output explanation:"),
+                        daq.BooleanSwitch(on=True,
+                                          id="explanation-toggle",
+                                          color='#00a250',
+                                          className="explanation-toggle")
+                    ]),
+                    dcc.Loading(id='explainer-obj', type="graph", className="")]),
                 ]),
             ])
         ])
+
+        @app.callback(
+            Output("explainer-obj", "className"),
+            Input("classify-new-sample", "n_clicks"),
+            State("explanation-toggle", 'on')
+        )
+        def unhide_explainer_loading(*args):
+            if args[1]:
+                return ""
+            else:
+                return "hidden"
+
 
         @app.callback(
             Output("classification-output", "children"),
             Output("classification-output", "className"),
             Output("explainer-obj", "children"),
             Input("classify-new-sample", "n_clicks"),
-            [State("{}-input".format(col_name), 'value', ) for col_name in self.df.columns if col_name != target_col],
+            [State("{}-input".format(col_name), 'value', ) for col_name in self.df.columns if col_name != target_col] +
+            [State("explanation-toggle", 'on')],
             prevent_initial_call=True
         )
         def classify_new_sample(*args):
             try:
-                new_sample = pd.DataFrame(args[1:] + (-1,)).transpose()
+                new_sample = pd.DataFrame(args[1:-1] + (-1,)).transpose()
                 new_sample.columns = [col_name for col_name in df.columns]
 
                 # predict new sample
                 prediction, encoded_sample_no_target = _perform_classification_pipeline(new_sample)
 
-                # create expainer object
-                explainer_object = _perform_explaination(encoded_sample_no_target, model)
+                # create explainer object if toggle is on
+                if args[-1] is True:
+                    explainer_object = _perform_explaination(encoded_sample_no_target, model)
+                else:
+                    explainer_object = html.Div()
 
                 print("Classified sample as class {}".format(prediction))
                 return prediction, "classification-output-container green", explainer_object
@@ -177,25 +201,24 @@ class DashServer:
             encoded_sample_no_target = encoded_sample.loc[:, encoded_sample.columns != target_col]
             prediction = model.predict(encoded_sample_no_target)
             return prediction, encoded_sample_no_target
-        
+
         def _perform_explaination(sample, model):
             """
             Create a lime explanation for a new sample
             :param sample: a new data instance provided by the dash that is to be explained
             :param: the model we used for prediciting the class lable for the new sample
             :return: the lime explanation for the sample
-            """  
+            """
             explaination = instance_explainer.explain_instance(
-            data_row=np.array(sample)[0],
-            predict_fn=model.predict_proba)
+                data_row=np.array(sample)[0],
+                predict_fn=model.predict_proba)
 
             obj = html.Iframe(
-            srcDoc=explaination.as_html(),
-            width='100%',
-            height='800px',
-            style={'border': '2px #d3d3d3 solid'},
+                srcDoc=explaination.as_html(),
+                width='100%',
+                height='400px',
+                style={'border': '2px #d3d3d3 solid'},
             )
-
             return obj
 
         return app

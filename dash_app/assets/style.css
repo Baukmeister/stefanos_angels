@@ -109,3 +109,21 @@ button[disabled=disabled], button:disabled{
 .green{
     color: #00a250;
 }
+
+.explanation-container{
+    margin-bottom: 150px;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.explanation-container-header{
+    display: flex;
+}
+
+.explanation-toggle{
+    margin: 23px
+}
+
+.hidden{
+    visibility: hidden;
+}
