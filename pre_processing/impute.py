@@ -21,21 +21,23 @@ def impute(dataset: pd.DataFrame, strategy, drop_threshold=300) -> pd.DataFrame:
         for col in imputed_dataset.columns:
             median_value = imputed_dataset[imputed_dataset[col] != "?"][col].astype(float).median()
             imputed_dataset[col] = imputed_dataset[col].replace("?", median_value)
-        return imputed_dataset
 
-    if strategy == "drop_row":
+    elif strategy == "drop_row":
         for col in dataset.columns:
             imputed_dataset = imputed_dataset[imputed_dataset[col] != "?"]
-        return imputed_dataset
 
-    if strategy == "median":
+    elif strategy == "median":
         for col in dataset.columns:
             median_value = imputed_dataset[imputed_dataset[col] != "?"][col].astype(float).median()
             imputed_dataset[col] = imputed_dataset[col].replace("?", median_value)
-        return imputed_dataset
 
-    if strategy == "mean":
+    elif strategy == "mean":
         for col in dataset.columns:
             mean_value = imputed_dataset[imputed_dataset[col] != "?"][col].astype(float).mean()
             imputed_dataset[col] = imputed_dataset[col].replace("?", mean_value)
-        return imputed_dataset
+
+    else:
+        raise ValueError('Strategy \"{}\" is not defined'.format(strategy))
+
+    imputed_dataset = imputed_dataset.reset_index(drop=True)
+    return imputed_dataset

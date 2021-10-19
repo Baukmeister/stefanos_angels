@@ -71,7 +71,6 @@ binary_response_dataset = binary_transformation(selected_dataset)
 
 # perform normalization and other pre-processing
 imputed_dataset = impute(binary_response_dataset, "drop_n", drop_threshold=301)
-imputed_dataset = imputed_dataset.reset_index(drop=True)
 
 normalized_dataset, Normalizer = normalize(imputed_dataset, "z",
                                            excluded_cols=non_normalization_colums + categorical_columns)
