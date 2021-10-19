@@ -17,7 +17,7 @@ def encode(dataset: pd.DataFrame, columns_to_encode=None, encoder: OneHotEncoder
     """
 
     columns_not_to_encode = [col for col in dataset.columns if col not in columns_to_encode]
-    columns_to_encode = [col for col in columns_not_to_encode if col in dataset.columns]
+    columns_to_encode = [col for col in columns_to_encode if col in dataset.columns]
 
     if encoder is None:
         encoder = OneHotEncoder(sparse=False, handle_unknown='ignore').fit(dataset[columns_to_encode])
