@@ -100,8 +100,6 @@ class DashServer:
                                              id="{}-input".format(col_name),
                                              type="number",
                                              className="new-sample-input-field",
-                                             # remove this to get rid of the pre-filling of fields
-                                             value=1,
                                              placeholder="enter value"
                                          )]) for col_name in self.df.columns if col_name != self.target_col
                                  ] +
