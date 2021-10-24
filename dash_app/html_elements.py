@@ -27,7 +27,7 @@ def get_model_viz_html(eval_results: dict, cv_result: pd.DataFrame):
     # create the figure
     fig = ff.create_annotated_heatmap(
         confusion_matrix,
-        colorscale='Viridis',
+        colorscale='turbo',  # previous value was 'Viridis'
         x=x,
         y=y,
         annotation_text=z_text
@@ -50,7 +50,7 @@ def get_model_viz_html(eval_results: dict, cv_result: pd.DataFrame):
             html.Br(),
             html.Span("AUC ROC: {}".format(eval_results['AUC']))
         ]),
-        html.H3("MODEL VIZ"),
+        html.H3("MODEL VISUALIZATION"),
         html.Div([
             html.H4("Confusion Matrix"),
             dcc.Graph(figure=fig),
