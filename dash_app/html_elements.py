@@ -27,7 +27,7 @@ def get_model_viz_html(eval_results: dict, cv_result: pd.DataFrame):
     # create the figure
     fig = ff.create_annotated_heatmap(
         confusion_matrix,
-        colorscale='turbo',  # previous value was 'Viridis'
+        colorscale='turbo',
         x=x,
         y=y,
         annotation_text=z_text
